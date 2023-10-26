@@ -122,7 +122,7 @@ class TripsController extends AbstractController
         $orders = $this->getTripsData($search, $product, $page_first_result, $results_per_page);
         
         $totals = $this->getTripsTotals($this->getTripsData($search, $product));
-dump($totals);
+
         return $this->render('private/trips/trips.html.twig', [
             'form'              => $form->createView(),
             'orders'            => $orders,
