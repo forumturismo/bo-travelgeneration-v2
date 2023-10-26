@@ -70,6 +70,10 @@ class Information {
                 new SchoolData('Universidade Lusófona de Humanidades e Tecnologias', 'Universidade Lusófona de Humanidades e Tecnologias')
         ];
 
+        
+        
+        
+        
         $this->status   = [
             (object) [ "slug" => "wc-pending",           "name" => "Pagamento pendente"],
             (object) [ "slug" => "wc-processing",        "name" => "Em processamento"],
