@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New PagamentoOffline{% endblock %}
+
+{% block body %}
+    <h1>Create new PagamentoOffline</h1>
+
+    {{ include('pagamento_offline/_form.html.twig') }}
+
+    <a href="{{ path('app_pagamento_offline_index') }}">back to list</a>
+{% endblock %}

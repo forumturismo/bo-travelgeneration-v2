@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}PagamentoOffline{% endblock %}
+
+{% block body %}
+    <h1>PagamentoOffline</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ pagamento_offline.id }}</td>
+            </tr>
+            <tr>
+                <th>NumFile</th>
+                <td>{{ pagamento_offline.numFile }}</td>
+            </tr>
+            <tr>
+                <th>Cliente</th>
+                <td>{{ pagamento_offline.cliente }}</td>
+            </tr>
+            <tr>
+                <th>Destino</th>
+                <td>{{ pagamento_offline.destino }}</td>
+            </tr>
+            <tr>
+                <th>Comercial</th>
+                <td>{{ pagamento_offline.comercial }}</td>
+            </tr>
+            <tr>
+                <th>PrecoVenda</th>
+                <td>{{ pagamento_offline.precoVenda }}</td>
+            </tr>
+            <tr>
+                <th>ValorPago</th>
+                <td>{{ pagamento_offline.valorPago }}</td>
+            </tr>
+            <tr>
+                <th>ValorPendente</th>
+                <td>{{ pagamento_offline.valorPendente }}</td>
+            </tr>
+            <tr>
+                <th>MetodoPagamento</th>
+                <td>{{ pagamento_offline.metodoPagamento }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_pagamento_offline_index') }}">back to list</a>
+
+    <a href="{{ path('app_pagamento_offline_edit', {'id': pagamento_offline.id}) }}">edit</a>
+
+    {{ include('pagamento_offline/_delete_form.html.twig') }}
+{% endblock %}

@@ -1,0 +1,61 @@
+doctrine:
+    dbal:
+        default_connection: default
+        connections:
+            default:
+                url: '%env(resolve:DATABASE_URL)%'
+                driver: 'pdo_mysql'
+                server_version: '5.7'
+                charset: utf8mb4
+            woocommerce:
+                url: '%env(resolve:DATABASE_WOO_URL)%'
+                driver: 'pdo_mysql'
+                server_version: '5.7'
+                charset: utf8mb4
+    orm:
+        auto_generate_proxy_classes: false
+        entity_managers:
+            default:
+                connection: default
+                mappings:
+                    App:
+                        is_bundle: false
+                        type: annotation
+                        dir: '%kernel.project_dir%/src/Entity'
+                        prefix: 'App\Entity'
+            woocommerce:
+                connection: woocommerce
+                mappings:
+                    Woocommerce:
+                        is_bundle: false
+                        type: annotation
+                        dir: '%kernel.project_dir%/src/Entity'
+                        prefix: 'App\Entity'
+
+#                        dir: '%kernel.project_dir%/src/EntityWoo'
+#                        prefix: 'App\EntityWoo'
+
+when@test:
+    doctrine:
+        dbal:
+            # "TEST_TOKEN" is typically set by ParaTest
+            dbname_suffix: '_test%env(default::TEST_TOKEN)%'
+
+when@prod:
+    doctrine:
+        orm:
+            auto_generate_proxy_classes: false
+            query_cache_driver:
+                type: pool
+                pool: doctrine.system_cache_pool
+            result_cache_driver:
+                type: pool
+                pool: doctrine.result_cache_pool
+
+    framework:
+        cache:
+            pools:
+                doctrine.result_cache_pool:
+                    adapter: cache.app
+                doctrine.system_cache_pool:
+                    adapter: cache.system

@@ -1,0 +1,52 @@
+
+
+{% extends 'private/base.html.twig' %}
+
+{% block title %}Edit Pagamentos Offline{% endblock %}
+
+{% block stylesheets %}
+{% endblock %}
+
+{% block pageHeading %}Editar Pagamentos Offline{% endblock %}
+
+{% block pageBreadcrumb %}
+{% endblock %}
+
+{% block pageActions %}
+    {#<form action="{{ path('export_trips', { product: product } ) }}" method="post">
+        <input type="hidden" name="json" value="{{ search }}">
+        <button class="btn btn-sm fw-bold btn-primary" type="submit">Exportar dados</button>
+    </form>#}
+{% endblock %}
+
+{% block body %}
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card card-flush">
+                <div class="card-header pt-7">
+                                   
+
+                    {{ include('pagamento_offline/_form.html.twig', {'button_label': 'Update'}) }}
+
+                    <a class="btn btn-info" href="{{ path('app_pagamento_offline_index') }}">back to list</a>
+
+                    {{ include('pagamento_offline/_delete_form.html.twig') }}
+
+                </div>
+
+
+
+
+
+
+
+
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+{% endblock %}

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
+        <!--begin::Global Stylesheets Bundle(used by all pages)-->
+        <link href="{{ asset('assets/theme/plugins/global/plugins.bundle.css') }}" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('assets/theme/css/style.bundle.css') }}" rel="stylesheet" type="text/css" />
+        <!--end::Global Stylesheets Bundle-->
+        {% block stylesheets %}
+        {% endblock %}
+    </head>
+    <body id="kt_body" class="app-blank app-blank">
+        <script>var defaultThemeMode = "light"; var themeMode; if ( document.documentElement ) { if ( document.documentElement.hasAttribute("data-theme-mode")) { themeMode = document.documentElement.getAttribute("data-theme-mode"); } else { if ( localStorage.getItem("data-theme") !== null ) { themeMode = localStorage.getItem("data-theme"); } else { themeMode = defaultThemeMode; } } if (themeMode === "system") { themeMode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"; } document.documentElement.setAttribute("data-theme", themeMode); }</script>
+
+        {% block body %}{% endblock %}
+
+        <script src="{{ asset('assets/theme/plugins/global/plugins.bundle.js') }}"></script>
+        <script src="{{ asset('assets/theme/js/scripts.bundle.js') }}"></script>
+        {% block javascripts %}{% endblock %}
+    </body>
+</html>
