@@ -39,28 +39,76 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div>
-                        <div class="mb-2">
-                            <span class="text-gray-700 fw-semibold fs-6">Por escola</span>
-                        </div>
-                        {% for school in trip_school_resume.schools_resume %}
-                            <div class="d-flex fw-semibold align-items-center">
-                                <div class="text-gray-500 flex-grow-1 me-4">{{ school.school }}</div>
-                                <div class="fw-bolder">{{ school.total }}</div>
-                            </div>
-                        {% endfor %}
-                    </div>
-                    <div class="my-4">
-                        <div class="mb-2">
-                            <span class="text-gray-700 fw-semibold fs-6">Por estado</span>
-                        </div>
-                        {% for status in trip_school_resume.total_status %}
-                            <div class="d-flex fw-semibold align-items-center">
-                                <div class="text-gray-500 flex-grow-1 me-4">{{ status.status_desc.label }}</div>
-                                <div class="fw-bolder">{{ status.total }}</div>
-                            </div>
-                        {% endfor %}
-                    </div>
+
+
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th style="width: 50%" scope="col"><b>Por escola<b/></th>
+                                <th style="width: 50%" scope="col">&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for school in trip_school_resume.schools_resume %}
+                                <tr>
+                                    <th scope="row">{{ school.school }}</th>
+                                    <td>{{ school.total }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                    <br/>
+
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th style="width: 50%" scope="col" ><b>Por estado</b></th>
+                                <th style="width: 50%" scope="col">&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for status in trip_school_resume.total_status %}
+                                <tr>
+                                    <th scope="row">{{ status.status_desc.label }}</th>
+                                    <td>{{ status.total }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+
+
+                    {#                    <div class="col-6">
+                                            <div class="mb-2">
+                                                <span class="text-gray-700 fw-semibold fs-6">Por escola</span>
+                                            </div>
+                                            {% for school in trip_school_resume.schools_resume %}
+                                                
+                                                
+                                               
+                                                <div class="d-flex fw-semibold align-items-center">
+                                                    <div class="text-gray-500 flex-grow-1 me-4">{{ school.school }}</div>
+                                                    <div class="fw-bolder">{{ school.total }}</div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                       
+                    
+                    
+                    
+                    
+                    <div class="col-6">
+                                            <div class="mb-2">
+                                                <span class="text-gray-700 fw-semibold fs-6">Por estado</span>
+                                            </div>
+                                            {% for status in trip_school_resume.total_status %}
+                                                <div class="d-flex fw-semibold align-items-center">
+                                                    <div class="text-gray-500 flex-grow-1 me-4">{{ status.status_desc.label }}</div>
+                                                    <div class="fw-bolder">{{ status.total }}</div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>#}
                 </div>
             </div>
         </div>
