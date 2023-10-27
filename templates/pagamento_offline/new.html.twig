@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{#{% extends 'base.html.twig' %}
 
 {% block title %}New PagamentoOffline{% endblock %}
 
@@ -8,4 +8,48 @@
     {{ include('pagamento_offline/_form.html.twig') }}
 
     <a href="{{ path('app_pagamento_offline_index') }}">back to list</a>
+{% endblock %}
+
+
+
+
+
+#}
+
+{% extends 'private/base.html.twig' %}
+
+{% block title %}Pagamentos Offline{% endblock %}
+
+{% block stylesheets %}
+{% endblock %}
+
+{% block pageHeading %}Create Pagamentos Offline{% endblock %}
+
+{% block pageBreadcrumb %}
+{% endblock %}
+
+{% block pageActions %}
+    {#<form action="{{ path('export_trips', { product: product } ) }}" method="post">
+        <input type="hidden" name="json" value="{{ search }}">
+        <button class="btn btn-sm fw-bold btn-primary" type="submit">Exportar dados</button>
+    </form>#}
+{% endblock %}
+
+{% block body %}
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card card-flush">
+                <div class="card-header pt-7">
+
+                    {{ include('pagamento_offline/_form.html.twig', {'button_label': 'Create'}) }}
+                    
+                    <a class="btn btn-info" href="{{ path('app_pagamento_offline_index') }}">back to list</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
 {% endblock %}

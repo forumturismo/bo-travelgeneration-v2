@@ -1,60 +1,62 @@
 
-    
+
 
 {{ form_start(form) }}
 <div class="row">
     <div class="col-md-6">
         <div class="form-group">
-            {{ form_label(form.numFile) }}
+            {{ form_label(form.numFile) }}:
             {{ form_widget(form.numFile, {'attr': {'class': 'form-control form-control-solid '}}) }}
             {#<small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>#}
         </div>
         <div class="form-group">
-            {{ form_label(form.cliente) }}
+            {{ form_label(form.cliente) }}:
             {{ form_widget(form.cliente, {'attr': {'class': 'form-control form-control-solid '}})  }}
         </div>
 
         <div class="form-group">
-            {{ form_label(form.destino) }}
+            {{ form_label(form.destino) }}:
             {{ form_widget(form.destino, {'attr': {'class': 'form-control form-control-solid '}})  }}
         </div>
 
         <div class="form-group">
-            {{ form_label(form.comercial) }}
+            {{ form_label(form.comercial) }}:
             {{ form_widget(form.comercial, {'attr': {'class': 'form-control form-control-solid '}})  }}
         </div>
     </div>
 
     <div class="col-md-6">
         <div class="form-group">
-            {{ form_label(form.precoVenda) }}
+            {{ form_label(form.precoVenda) }}:
             {{ form_widget(form.precoVenda, {'attr': {'class': 'form-control form-control-solid '}})  }}
         </div>
 
 
         <div class="form-group">
-            {{ form_label(form.valorPago) }}
+            {{ form_label(form.valorPago) }}:
             {{ form_widget(form.valorPago, {'attr': {'class': 'form-control form-control-solid '}})  }}
         </div> 
 
         <div class="form-group">
-            {{ form_label(form.valorPendente) }}
+            {{ form_label(form.valorPendente) }}:
             {{ form_widget(form.valorPendente, {'attr': {'class': 'form-control form-control-solid '}})  }}
         </div>  
 
         <div class="form-group">
-            {{ form_label(form.metodoPagamento) }}
+            {{ form_label(form.metodoPagamento) }}:
             {{ form_widget(form.metodoPagamento, {'attr': {'class': 'form-control form-control-solid '}})  }}
         </div>  
 
     </div>
-    
-    
-
-
 </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-            {{ form_end(form) }}
+<button type="submit" class="btn btn-primary">{{ button_label }}</button>
+{{ form_end(form) }}
+
+
+
+
+
+
 {#                    <div class="card-toolbar">
                                           {{ form_start(form) }}
                                           <div class="d-flex flex-stack flex-wrap gap-4">
