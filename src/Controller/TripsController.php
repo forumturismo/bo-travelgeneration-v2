@@ -317,6 +317,9 @@ class TripsController extends AbstractController
                         FROM travelgeneration.wp_wc_order_stats AS child_orders
                         WHERE child_orders.parent_id = wc_order.order_id 
                         AND wc_order.status <> "wc-trash"
+                        #LM - BEGIN
+                        AND wc_order.order_id not in(SELECT wp_posts.ID FROM wp_posts WHERE post_status like "%trash%" and post_type = "shop_order")
+                        #LM - END
                         ) AS child_orders,
                         
                         #Retorna o valor total dos parcelamentos da encomenda
@@ -324,6 +327,9 @@ class TripsController extends AbstractController
                         FROM travelgeneration.wp_wc_order_stats AS child_order
                         WHERE child_order.parent_id = wc_order.order_id
                         AND wc_order.status <> "wc-trash"
+                        #LM - BEGIN
+                        AND wc_order.order_id not in(SELECT wp_posts.ID FROM wp_posts WHERE post_status like "%trash%" and post_type = "shop_order")
+                        #LM - END
                         ) AS child_orders_total,
 
 
@@ -333,6 +339,9 @@ class TripsController extends AbstractController
                         INNER JOIN travelgeneration.wp_postmeta AS child_order_postmeta ON child_order.order_id = child_order_postmeta.post_id AND child_order_postmeta.meta_key = "_paid_date"
                         WHERE child_order.parent_id = wc_order.order_id
                         AND wc_order.status <> "wc-trash"
+                        #LM - BEGIN
+                        AND wc_order.order_id not in(SELECT wp_posts.ID FROM wp_posts WHERE post_status like "%trash%" and post_type = "shop_order")
+                        #LM - END                        
                         ) AS child_orders_paid,
                         
 
@@ -342,6 +351,9 @@ class TripsController extends AbstractController
                         INNER JOIN travelgeneration.wp_postmeta AS child_order_postmeta ON child_order.order_id = child_order_postmeta.post_id AND child_order_postmeta.meta_key = "_paid_date"
                         WHERE child_order.parent_id = wc_order.order_id
                         AND wc_order.status <> "wc-trash"
+                        #LM - BEGIN
+                        AND wc_order.order_id not in(SELECT wp_posts.ID FROM wp_posts WHERE post_status like "%trash%" and post_type = "shop_order")
+                        #LM - END
                         ) AS child_orders_paid_total,
 
 
@@ -362,7 +374,10 @@ class TripsController extends AbstractController
                         WHERE wc_order.order_id = wp_postmeta.post_id AND wp_postmeta.meta_key = "_payment_method_title"
                         ) AS payment_method,
                        
-                       (SELECT insurance.meta_value FROM travelgeneration.wp_woocommerce_order_itemmeta AS insurance WHERE insurance.order_item_id = wc_item.order_item_id AND insurance.meta_key = "pa_seguro-covid-premium") AS insurance
+                       (SELECT insurance.meta_value 
+                       FROM travelgeneration.wp_woocommerce_order_itemmeta AS insurance 
+                       WHERE insurance.order_item_id = wc_item.order_item_id 
+                       AND insurance.meta_key = "pa_seguro-covid-premium") AS insurance
             
                 FROM travelgeneration.wp_wc_order_stats AS wc_order
             
@@ -371,6 +386,9 @@ class TripsController extends AbstractController
                 INNER JOIN travelgeneration.wp_woocommerce_order_itemmeta AS wc_item_data ON wc_item.order_item_id = wc_item_data.order_item_id
                 
                 WHERE wc_order.parent_id = 0 AND wc_order.status <> "wc-trash" AND wc_item_data.meta_value = '. $product .'
+                #LM - BEGIN
+                and wc_order.order_id not in(SELECT wp_posts.ID FROM wp_posts WHERE post_status like "%trash%" and post_type = "shop_order")
+                #LM - END
                 ' . $search . '
             ) AS result 
            
@@ -381,6 +399,9 @@ ORDER BY result.order_id DESC' . $pagination;
         $orders = json_decode(json_encode($resultSet->fetchAllAssociative()));
 
         foreach ($orders as $order) {
+            
+           // dump($order);
+            
             $order->statusdesc = $this->information->getStatusType()[$order->status];
             $firstname = ""; $lastname = "";
 
