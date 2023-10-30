@@ -88,6 +88,12 @@ class StatisticsController extends AbstractController
             INNER JOIN travelgeneration.wp_usermeta AS wc_usermeta ON wc_usermeta.user_id = wc_customer.user_id AND wc_usermeta.meta_key = "billing_school"
             
             WHERE wc_order.parent_id = 0 AND wc_order.status <> "wc-trash" AND wc_item_data.meta_value = '. $product .'
+                
+            #LM - BEGIN
+            AND wc_order.order_id not in(SELECT wp_posts.ID FROM wp_posts WHERE post_status like "%trash%" and post_type = "shop_order")
+            #LM - END
+                        
+
             GROUP BY school
         ';
 
@@ -108,6 +114,10 @@ class StatisticsController extends AbstractController
             INNER JOIN travelgeneration.wp_woocommerce_order_itemmeta AS wc_item_data ON wc_item.order_item_id = wc_item_data.order_item_id
             
             WHERE wc_order.parent_id = 0 AND wc_order.status <> "wc-trash" AND wc_item_data.meta_value = '. $product .'
+                
+            #LM - BEGIN
+            AND wc_order.order_id not in(SELECT wp_posts.ID FROM wp_posts WHERE post_status like "%trash%" and post_type = "shop_order")
+            #LM - END
             GROUP BY wc_order.status;
         ';
 
