@@ -271,7 +271,7 @@ class TripsController extends AbstractController
 
         $pagination = (is_numeric($page_first_result) >= 0 and $results_per_page <> null) ? ' LIMIT ' . $page_first_result . ',' . $results_per_page : '';
 
-        $sql = 'SELECT result.order_id, result.insurance, result.date_created, result.date_paid, result.payment_method, 
+        $sql = 'SELECT result.order_id, result.insurance, result.coupon, result.date_created, result.date_paid, result.payment_method, 
             result.status, 
             result.order_total, 
             result.child_orders, 
@@ -377,8 +377,14 @@ class TripsController extends AbstractController
                        (SELECT insurance.meta_value 
                        FROM travelgeneration.wp_woocommerce_order_itemmeta AS insurance 
                        WHERE insurance.order_item_id = wc_item.order_item_id 
-                       AND insurance.meta_key = "pa_seguro-covid-premium") AS insurance
-            
+                       AND insurance.meta_key = "pa_seguro-covid-premium") AS insurance,
+                       
+                        (SELECT wp_posts.post_title
+                        FROM travelgeneration.wp_posts AS wp_posts 
+                        join wp_wc_order_coupon_lookup on wp_posts.id = wp_wc_order_coupon_lookup.coupon_id
+                        WHERE wc_order.order_id = wp_wc_order_coupon_lookup.order_id) AS coupon
+
+
                 FROM travelgeneration.wp_wc_order_stats AS wc_order
             
                 INNER JOIN travelgeneration.wp_wc_customer_lookup AS wc_customer ON wc_order.customer_id = wc_customer.customer_id

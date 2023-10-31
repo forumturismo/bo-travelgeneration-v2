@@ -81,7 +81,8 @@
                         <thead>
                             <tr class="text-start text-gray-400 fw-bold fs-7 text-uppercase gs-0">
                                 <th class="min-w-100px">ID Viagem</th>
-                                <th class="min-w-100px">Seguro</th>
+                                {#<th class="min-w-100px">Seguro</th>#}
+                                <th class="min-w-100px">Cupão</th>
                                 <th class="text-end min-w-125px">Cliente</th>
                                 <th class="text-end min-w-125px">Escola</th>
                                 <th class="text-end min-w-100px">Parcelas</th>
@@ -100,7 +101,15 @@
                                         <div>{{ order.date_created|date("d/m/Y H:i") }}</div>
                                     </td>
                                     <td>
-                                        <div class="text-capitalize {% if order.insurance == "Sim" %}text-success{% else %}text-danger{% endif %}">{{ order.insurance }}</div>
+                                        {#<div class="text-capitalize {% if order.insurance == "Sim" %}text-success{% else %}text-danger{% endif %}">{{ order.insurance }}</div>#}
+                                                                       
+                                        {% if order.coupon %}
+                                            <div class="text-capitalize text-success">{{ order.coupon }}</div>
+                                        {% else %}
+                                            <div class="text-capitalize text-danger">N/A</div>
+                                        {% endif %}
+                                    
+                                    
                                     </td>
                                     <td class="text-end">
                                         <div class="text-gray-800 text-capitalize">{{ order.customer_name }}</div>
