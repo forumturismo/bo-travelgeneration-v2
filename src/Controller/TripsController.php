@@ -143,7 +143,8 @@ class TripsController extends AbstractController
         $columns = [
             'Id',
             'Estado',
-            'Seguro',
+//            'Seguro',
+              'Cupão',
             'Data de criação',
             'Parcelas',
             'Por pagar',
@@ -178,7 +179,8 @@ class TripsController extends AbstractController
             $ordersToExport[] = [
                 "id"                            => $order->order_id,
                 "status"                        => $order->statusdesc["label"],
-                "insurance"                     => $order->insurance,
+//                "insurance"                     => $order->insurance,
+                  "coupon"                     => $order->coupon,
                 "date_created"                  => $order->date_created,
                 "installments"                  => (integer) $order->child_orders,
                 "child_orders_unpaid_total"     => $order->child_orders_unpaid_total,
