@@ -46,10 +46,9 @@ class CouponController extends AbstractController
         $stmt = $this->conn->prepare($sql);
         $resultSet = $stmt->executeQuery();
         
-        
         $coupons = $resultSet->fetchAllAssociative();
         
-  dump($coupons);
+
         return $this->render('private/coupon/index.html.twig', [
             'coupons'   => $coupons
         ]);
