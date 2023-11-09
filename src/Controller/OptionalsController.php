@@ -241,7 +241,7 @@ class OptionalsController extends AbstractController
             $optional->statusdesc = $this->information->getStatusType()[$optional->status];
             $optional->item_data = json_decode($optional->item_data);
             
-            //dump($optional);
+            //dump($optional->item_data);
             
             $firstname = ""; $lastname = "";
             foreach (json_decode($optional->user_data) as $user_data) {

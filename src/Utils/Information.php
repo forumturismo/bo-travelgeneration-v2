@@ -52,6 +52,7 @@ class Information {
                 new SchoolData('Escola Profissional Gustave Eiffel - Amadora', 'Escola Profissional Gustave Eiffel - Amadora'),
                 new SchoolData('Escola Profissional Gustave Eiffel - Queluz', 'Escola Profissional Gustave Eiffel - Queluz'),
                 new SchoolData('Escola Profissional Magestil', 'Escola Profissional Magestil'),
+                new SchoolData('Escola Profissional Profitecla - Lisboa', 'Escola Profissional Profitecla - Lisboa'),
                 new SchoolData('Escola Profissional de Hotelaria e Turismo do Chiado', 'Escola Profissional de Hotelaria e Turismo do Chiado'),
                 new SchoolData('Escola Secundária Santa Maria da Feira', 'Escola Secundária Santa Maria da Feira'),
                 new SchoolData('ESHTE - Escola Superior de Hotelaria e Turismo do Estoril', 'ESHTE - Escola Superior de Hotelaria e Turismo do Estoril'),
