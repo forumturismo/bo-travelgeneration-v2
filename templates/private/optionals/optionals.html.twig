@@ -20,111 +20,121 @@
 {% endblock %}
 
 {% block body %}
-<div class="row">
-    {% for optional in totals %}
-        <div class="col-md-2">
-            <div class="card card-flush mb-4 mb-xl-8">
-                <div class="card-header p-5">
-                    <div class="card-title d-flex flex-column">
-                        <span class="fs-2hx fw-bold text-white me-2 mb-2 lh-1 ls-n2 text-primary">{{ optional.value }}</span>
-                        <span class="text-gray-600 pt-1 fw-semibold fs-6">{{ optional.key }}</span>
+    <div class="row">
+        {% for optional in totals %}
+            <div class="col-md-2">
+                <div class="card card-flush mb-4 mb-xl-8">
+                    <div class="card-header p-5">
+                        <div class="card-title d-flex flex-column">
+                            <span class="fs-2hx fw-bold text-white me-2 mb-2 lh-1 ls-n2 text-primary">{{ optional.value }}</span>
+                            <span class="text-gray-600 pt-1 fw-semibold fs-6">{{ optional.key }}</span>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    {% endfor %}
-</div>
-<div class="row">
-    <div class="col-12">
-        <div class="card card-flush h-xl-100">
-            <div class="card-header pt-7">
-                <h3 class="card-title align-items-start flex-column">
-                    <span class="card-label fw-bold text-gray-800">Opcionais</span>
-                    <span class="text-gray-400 mt-1 fw-semibold fs-6">Apenas opcionais</span>
-                </h3>
-                <div class="card-toolbar">
-                    {{ form_start(form) }}
-                    <div class="d-flex flex-stack flex-wrap gap-4">
-                        
-                        <div class="d-flex align-items-center fw-bold">
-                            <div class="text-gray-400 fs-7 me-2">Produto</div>
-                            {{ form_widget(form.product, { attr: { class: "form-select w-200px max-w-200px form-select-transparent text-dark fs-7 lh-1 fw-bold py-0 ps-3", "data-control": "select2", "data-dropdown-css-class": "w-300px" , "data-hide-search": "true" } }) }}
-                        </div>
-                        
-                        <div class="d-flex align-items-center fw-bold">
-                            <div class="text-gray-400 fs-7 me-2">Escola</div>
-                            {{ form_widget(form.school, { attr: { class: "form-select w-200px max-w-200px form-select-transparent text-dark fs-7 lh-1 fw-bold py-0 ps-3", "data-control": "select2", "data-dropdown-css-class": "w-300px" , "data-hide-search": "true" } }) }}
-                        </div>
-                        <div class="d-flex align-items-center fw-bold">
-                            <div class="text-gray-400 fs-7 me-2">Estado</div>
-                            {{ form_widget(form.status, { attr: { class: "form-select w-200px max-w-200px form-select-transparent text-dark fs-7 lh-1 fw-bold py-0 ps-3", "data-control": "select2", "data-dropdown-css-class": "w-300px" , "data-hide-search": "true" } }) }}
-                        </div>
-                        <div class="d-flex align-items-center position-relative my-1">
-                            <span class="svg-icon svg-icon-1 position-absolute ms-6">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {% endfor %}
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card card-flush h-xl-100">
+                <div class="card-header pt-7">
+                    <h3 class="card-title align-items-start flex-column">
+                        <span class="card-label fw-bold text-gray-800">Opcionais</span>
+                        <span class="text-gray-400 mt-1 fw-semibold fs-6">Apenas opcionais</span>
+                    </h3>
+                    <div class="card-toolbar">
+                        {{ form_start(form) }}
+                        <div class="d-flex flex-stack flex-wrap gap-4">
+
+                            <div class="d-flex align-items-center fw-bold">
+                                <div class="text-gray-400 fs-7 me-2">Produto</div>
+                                {{ form_widget(form.product, { attr: { class: "form-select w-200px max-w-200px form-select-transparent text-dark fs-7 lh-1 fw-bold py-0 ps-3", "data-control": "select2", "data-dropdown-css-class": "w-300px" , "data-hide-search": "true" } }) }}
+                            </div>
+
+                            <div class="d-flex align-items-center fw-bold">
+                                <div class="text-gray-400 fs-7 me-2">Escola</div>
+                                {{ form_widget(form.school, { attr: { class: "form-select w-200px max-w-200px form-select-transparent text-dark fs-7 lh-1 fw-bold py-0 ps-3", "data-control": "select2", "data-dropdown-css-class": "w-300px" , "data-hide-search": "true" } }) }}
+                            </div>
+                            <div class="d-flex align-items-center fw-bold">
+                                <div class="text-gray-400 fs-7 me-2">Estado</div>
+                                {{ form_widget(form.status, { attr: { class: "form-select w-200px max-w-200px form-select-transparent text-dark fs-7 lh-1 fw-bold py-0 ps-3", "data-control": "select2", "data-dropdown-css-class": "w-300px" , "data-hide-search": "true" } }) }}
+                            </div>
+                            <div class="d-flex align-items-center position-relative my-1">
+                                <span class="svg-icon svg-icon-1 position-absolute ms-6">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <rect opacity="0.5" x="17.0365" y="15.1223" width="8.15546" height="2" rx="1" transform="rotate(45 17.0365 15.1223)" fill="currentColor"></rect>
                                     <path d="M11 19C6.55556 19 3 15.4444 3 11C3 6.55556 6.55556 3 11 3C15.4444 3 19 6.55556 19 11C19 15.4444 15.4444 19 11 19ZM11 5C7.53333 5 5 7.53333 5 11C5 14.4667 7.53333 17 11 17C14.4667 17 17 14.4667 17 11C17 7.53333 14.4667 5 11 5Z" fill="currentColor"></path>
-                                </svg>
-                            </span>
-                            {{ form_widget(form.search, { attr: { class: "form-control form-control-solid w-350px ps-14", "data-kt-user-table-filter": "search" } }) }}
+                                    </svg>
+                                </span>
+                                {{ form_widget(form.search, { attr: { class: "form-control form-control-solid w-350px ps-14", "data-kt-user-table-filter": "search" } }) }}
+                            </div>
+                            <button type="submit" class="btn btn-sm btn-flex h-40px py-2 bg-secondary btn-color-gray-700 btn-active-color-primary fw-bold">
+                                <span class="svg-icon svg-icon-6 svg-icon-muted me-1">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M19.0759 3H4.72777C3.95892 3 3.47768 3.83148 3.86067 4.49814L8.56967 12.6949C9.17923 13.7559 9.5 14.9582 9.5 16.1819V19.5072C9.5 20.2189 10.2223 20.7028 10.8805 20.432L13.8805 19.1977C14.2553 19.0435 14.5 18.6783 14.5 18.273V13.8372C14.5 12.8089 14.8171 11.8056 15.408 10.964L19.8943 4.57465C20.3596 3.912 19.8856 3 19.0759 3Z" fill="currentColor" />
+                                    </svg>
+                                </span>
+                                Filtrar
+                            </button>
                         </div>
-                        <button type="submit" class="btn btn-sm btn-flex h-40px py-2 bg-secondary btn-color-gray-700 btn-active-color-primary fw-bold">
-                        <span class="svg-icon svg-icon-6 svg-icon-muted me-1">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M19.0759 3H4.72777C3.95892 3 3.47768 3.83148 3.86067 4.49814L8.56967 12.6949C9.17923 13.7559 9.5 14.9582 9.5 16.1819V19.5072C9.5 20.2189 10.2223 20.7028 10.8805 20.432L13.8805 19.1977C14.2553 19.0435 14.5 18.6783 14.5 18.273V13.8372C14.5 12.8089 14.8171 11.8056 15.408 10.964L19.8943 4.57465C20.3596 3.912 19.8856 3 19.0759 3Z" fill="currentColor" />
-                            </svg>
-                        </span>
-                            Filtrar
-                        </button>
+                        {{ form_end(form) }}
                     </div>
-                    {{ form_end(form) }}
                 </div>
-            </div>
-            <div class="card-body pt-2">
-                <table class="table align-middle table-row-dashed fs-6 gy-3">
-                    <thead>
-                    <tr class="text-start text-gray-400 fw-bold fs-7 text-uppercase gs-0">
-                        <th class="min-w-100px">ID Compra</th>
-                        <th class="text-end min-w-125px">Cliente</th>
-                        <th class="text-end min-w-125px">Escola</th>
-                        {% for column in columns %}
-                            <th class="text-center min-w-125px">{{ column }}</th>
-                        {% endfor %}
-                        <th class="text-end">Estado</th>
-                    </tr>
-                    </thead>
-                    <tbody class="fw-bold text-gray-600">
-                    {% for optional in optionals %}
-                        <tr>
-                            <td>
-                                <div class="text-gray-800">{{ optional.order_id }}</div>
-                                <div>{{ optional.date_created|date("d/m/Y H:i") }}</div>
-                            </td>
-                            <td class="text-end">
-                                <div class="text-gray-800 text-capitalize">{{ optional.customer_name }}</div>
-                                <div class="text-gray-600">{{ optional.email }}</div>
-                            </td>
-                            <td class="text-end">
-                                <div class="text-gray-800 text-capitalize">{{ optional.school }}</div>
-                            </td>
-                            {% for answer in optional.item_data %}
-                                <td class="text-center text-uppercase">
-                                    <div class="{% if answer == 'Não' %}text-danger{% else %}text-primary{% endif %}">
-                                        {{ answer }}
-                                    </div>
-                                </td>
+                <div class="card-body pt-2">
+                    <table class="table align-middle table-row-dashed fs-6 gy-3">
+                        <thead>
+                            <tr class="text-start text-gray-400 fw-bold fs-7 text-uppercase gs-0">
+                                <th class="min-w-100px">ID Compra</th>
+                                <th class="text-end min-w-125px">Cliente</th>
+                                <th class="text-end min-w-125px">Escola</th>
+                                    {% for column in columns %}
+                                    <th class="text-center min-w-125px">{{ column }}</th>
+                                    {% endfor %}
+                                <th class="text-end">Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody class="fw-bold text-gray-600">
+                            {% for optional in optionals %}
+                                <tr>
+                                    <td>
+                                        <div class="text-gray-800">{{ optional.order_id }}</div>
+                                        <div>{{ optional.date_created|date("d/m/Y H:i") }}</div>
+                                    </td>
+                                    <td class="text-end">
+                                        <div class="text-gray-800 text-capitalize">{{ optional.customer_name }}</div>
+                                        <div class="text-gray-600">{{ optional.email }}</div>
+                                    </td>
+                                    <td class="text-end">
+                                        <div class="text-gray-800 text-capitalize">{{ optional.school }}</div>
+                                    </td>
+
+                                    {% set counter= 0 %}
+                                    {% for answer in optional.item_data %}
+                                        <td class="text-center text-uppercase">
+                                            <div class="{% if answer == 'Não' %}text-danger{% else %}text-primary{% endif %}">
+                                                {# {{ answer }}#}
+                                                {% if optional.pieces|length > 1 %}
+                                                    {% set yes_or_no = optional.pieces[counter]|split(':') %}
+                                                    {{ yes_or_no[1] }}
+                                                {% else %}
+                                                    {{ answer }}
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                        {% set counter= counter+1 %}    
+                                    {% endfor %}
+
+                                    <td class="text-end">
+                                        <span class="badge py-3 px-4 fs-7 {{ optional.statusdesc.color_class }}">{{ optional.statusdesc.label }}</span>
+                                    </td>
+                                </tr>
                             {% endfor %}
-                            <td class="text-end">
-                                <span class="badge py-3 px-4 fs-7 {{ optional.statusdesc.color_class }}">{{ optional.statusdesc.label }}</span>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-</div>
 {% endblock %}
 
 {% block javascripts %}

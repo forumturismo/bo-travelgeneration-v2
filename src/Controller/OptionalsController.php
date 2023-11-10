@@ -19,14 +19,12 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * @Route("/optionals")
  */
-class OptionalsController extends AbstractController
-{
+class OptionalsController extends AbstractController {
 
     private $information;
     private $conn;
 
-    public function __construct(ManagerRegistry $doctrine)
-    {
+    public function __construct(ManagerRegistry $doctrine) {
         $this->information = new Information($doctrine);
         $this->conn = $this->information->getConn();
     }
@@ -34,75 +32,74 @@ class OptionalsController extends AbstractController
     /**
      * @Route("/", name="page_optionals", methods={"GET","POST"})
      */
-    public function getOptionals(Request $request): Response
-    {
-        $slug           = "";
-        $school         = "";
-        $search_value   = "";
-        $product        = 3253;
+    public function getOptionals(Request $request): Response {
+        $slug = "";
+        $school = "";
+        $search_value = "";
+        $product = 3253;
         //$product        = 4919;
 
         $formStatusFilter = new OrdersSearch();
         $form = $this->createFormBuilder($formStatusFilter)
-            ->add('product', ChoiceType::class, [
-                'label' => "Filtrar por produto opcional",
+                ->add('product', ChoiceType::class, [
+                    'label' => "Filtrar por produto opcional",
 //                'placeholder' => 'Todos os produtos',
-                'choices' => $this->information->getProductsOptionals(),
-                'required' => true,
-                'choice_value' => 'value',
-                'choice_label' => 'trip'
-            ])
-            ->add('school', ChoiceType::class, [
-                'label' => "Filtrar por escola",
-                'placeholder' => 'Todas as escolas',
-                'choices' => $this->information->getSchools(),
-                'required' => false,
-                'choice_value' => 'value',
-                'choice_label' => 'name'
-            ])
-            ->add('status', ChoiceType::class, [
-                'label' => "Filtrar por estado",
-                'placeholder' => 'Todos os estados',
-                'choices' => $this->information->getStatus(),
-                'required' => false,
-                'choice_value' => 'slug',
-                'choice_label' => 'name'
-            ])
-            ->add('search', TextType::class, [
-                'attr' => array(
-                    'placeholder' => 'Pesquisar por id, nome ou email'
-                ),
-                'required' => false
-            ])
-            ->getForm();
+                    'choices' => $this->information->getProductsOptionals(),
+                    'required' => true,
+                    'choice_value' => 'value',
+                    'choice_label' => 'trip'
+                ])
+                ->add('school', ChoiceType::class, [
+                    'label' => "Filtrar por escola",
+                    'placeholder' => 'Todas as escolas',
+                    'choices' => $this->information->getSchools(),
+                    'required' => false,
+                    'choice_value' => 'value',
+                    'choice_label' => 'name'
+                ])
+                ->add('status', ChoiceType::class, [
+                    'label' => "Filtrar por estado",
+                    'placeholder' => 'Todos os estados',
+                    'choices' => $this->information->getStatus(),
+                    'required' => false,
+                    'choice_value' => 'slug',
+                    'choice_label' => 'name'
+                ])
+                ->add('search', TextType::class, [
+                    'attr' => array(
+                        'placeholder' => 'Pesquisar por id, nome ou email'
+                    ),
+                    'required' => false
+                ])
+                ->getForm();
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $product      = $form->get("product")->getData() ? $form->get("product")->getData()->value : '';
-            $slug         = $form->get("status")->getData() ? $form->get("status")->getData()->slug : '';
-            $school       = $form->get("school")->getData() ? $form->get("school")->getData()->value : '';
+            $product = $form->get("product")->getData() ? $form->get("product")->getData()->value : '';
+            $slug = $form->get("status")->getData() ? $form->get("status")->getData()->slug : '';
+            $school = $form->get("school")->getData() ? $form->get("school")->getData()->value : '';
             $search_value = $form->get("search")->getData() ? $form->get("search")->getData() : '';
         }
 
         $search = $school ? ' AND EXISTS (
-		    SELECT wc_usermetadata.meta_value FROM travelgeneration.wp_usermeta as wc_usermetadata WHERE wc_usermetadata.user_id = wc_customer.user_id AND wc_usermetadata.meta_value = "'. $school . '"
+		    SELECT wc_usermetadata.meta_value FROM travelgeneration.wp_usermeta as wc_usermetadata WHERE wc_usermetadata.user_id = wc_customer.user_id AND wc_usermetadata.meta_value = "' . $school . '"
         )' : '';
 
-        $search .= $slug ? ' AND wc_order.status = "'. $slug .'"' : '';
+        $search .= $slug ? ' AND wc_order.status = "' . $slug . '"' : '';
 
-        $search .= $search_value ? ' AND (wc_order.order_id LIKE "%'. $search_value .'%"
+        $search .= $search_value ? ' AND (wc_order.order_id LIKE "%' . $search_value . '%"
         OR EXISTS (
             SELECT wc_user_data.meta_value FROM travelgeneration.wp_usermeta as wc_user_data WHERE wc_user_data.user_id = wc_customer.user_id
-            AND ((wc_user_data.meta_key = "last_name" AND wc_user_data.meta_value LIKE "%'. $search_value .'%") OR (wc_user_data.meta_key = "first_name" AND wc_user_data.meta_value LIKE "%'. $search_value .'%") OR (wc_user_data.meta_key = "billing_email" AND wc_user_data.meta_value LIKE "%'. $search_value .'%"))
+            AND ((wc_user_data.meta_key = "last_name" AND wc_user_data.meta_value LIKE "%' . $search_value . '%") OR (wc_user_data.meta_key = "first_name" AND wc_user_data.meta_value LIKE "%' . $search_value . '%") OR (wc_user_data.meta_key = "billing_email" AND wc_user_data.meta_value LIKE "%' . $search_value . '%"))
         ))' : '';
 
         $optionals = $this->getOptionalsData($search, $product, '');
-        $columns   = $this->getOptionalsColumns($optionals);
+        $columns = $this->getOptionalsColumns($optionals);
 
         $totals = [];
         foreach ($columns as $column) {
-            $totals[] = [ "key" => $column, "value" => 0 ];
+            $totals[] = ["key" => $column, "value" => 0];
         }
 
         foreach ($optionals as $optional) {
@@ -115,19 +112,18 @@ class OptionalsController extends AbstractController
         }
 
         return $this->render('private/optionals/optionals.html.twig', [
-            'product'           => $product,
-            'form'              => $form->createView(),
-            'optionals'         => $optionals,
-            'columns'           => $columns,
-            'totals'            => $totals
+                    'product' => $product,
+                    'form' => $form->createView(),
+                    'optionals' => $optionals,
+                    'columns' => $columns,
+                    'totals' => $totals
         ]);
     }
 
     /**
      * @Route("/export/{product}", name="export_optionals", methods={"GET","POST"})
      */
-    public function exportOptionals(Request $request, int $product): StreamedResponse
-    {
+    public function exportOptionals(Request $request, int $product): StreamedResponse {
         $columns = [
             'Id',
             'Estado',
@@ -148,13 +144,13 @@ class OptionalsController extends AbstractController
         foreach ($optionals as $optional) {
             $optional->item_data = $this->sortArrayByColumns($optional->item_data, $optionalsColumns);
             $optionalData = [
-                "id"                => $optional->order_id,
-                "status"            => $optional->statusdesc["label"],
-                "date_created"      => $optional->date_created,
-                "nome"              => $optional->customer_name,
-                "email"             => $optional->email ?? '',
-                "school"            => $optional->school ?? '',
-                "phone"             => $optional->phone ?? '',
+                "id" => $optional->order_id,
+                "status" => $optional->statusdesc["label"],
+                "date_created" => $optional->date_created,
+                "nome" => $optional->customer_name,
+                "email" => $optional->email ?? '',
+                "school" => $optional->school ?? '',
+                "phone" => $optional->phone ?? '',
             ];
             $optionalsToExport[] = array_merge($optionalData, $optional->item_data);
         }
@@ -162,12 +158,11 @@ class OptionalsController extends AbstractController
         return $this->createExcelSpreadsheet("Opcionais.xlsx", $columns, $optionalsToExport);
     }
 
-    protected function createExcelSpreadsheet($filename, $columns, $rows): StreamedResponse
-    {
+    protected function createExcelSpreadsheet($filename, $columns, $rows): StreamedResponse {
         $contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
         $response = new StreamedResponse();
         $response->headers->set('Content-Type', $contentType);
-        $response->headers->set('Content-Disposition', 'attachment;filename="'.$filename.'"');
+        $response->headers->set('Content-Disposition', 'attachment;filename="' . $filename . '"');
         $response->setPrivate();
         $response->headers->addCacheControlDirective('no-cache', true);
         $response->headers->addCacheControlDirective('must-revalidate', true);
@@ -183,20 +178,19 @@ class OptionalsController extends AbstractController
         $line = 2;
         foreach ($rows as $row) {
             $columnLetter = 'A';
-            foreach($row as $value) {
-                $sheet->setCellValue($columnLetter. $line, $value);
+            foreach ($row as $value) {
+                $sheet->setCellValue($columnLetter . $line, $value);
                 $columnLetter++;
             }
             $line++;
         }
 
         $writer = new Xlsx($spreadsheet);
-        $response->setCallback(function() use ($writer) {
+        $response->setCallback(function () use ($writer) {
             $writer->save('php://output');
         });
 
         return $response;
-
     }
 
     protected function getOptionalsData($search, $product, $condition) {
@@ -213,6 +207,14 @@ class OptionalsController extends AbstractController
                     WHERE wc_usermeta.user_id = wc_customer.user_id AND (wc_usermeta.meta_key = "first_name" OR wc_usermeta.meta_key = "last_name" OR wc_usermeta.meta_key = "billing_email" OR wc_usermeta.meta_key = "billing_school" OR wc_usermeta.meta_key = "billing_phone")
                 ) AS user_data,
                 
+                (SELECT post_excerpt FROM travelgeneration.wp_woocommerce_order_items 
+                    JOIN wp_woocommerce_order_itemmeta on wp_woocommerce_order_items.order_item_id = wp_woocommerce_order_itemmeta.order_item_id
+                    JOIN travelgeneration.wp_posts on wp_woocommerce_order_itemmeta.meta_value = travelgeneration.wp_posts.id
+                    WHERE wc_order.order_id = wp_woocommerce_order_items.order_id 
+                    AND wp_woocommerce_order_itemmeta.meta_key = "_variation_id" 
+                    AND post_parent = ' . $product . '
+                ) AS post_excerpt,
+
                 (select json_arrayagg(json_object( "key", wc_items.meta_key, "value", wc_items.meta_value ))
                     FROM travelgeneration.wp_woocommerce_order_itemmeta AS wc_items
                     WHERE wc_items.order_item_id = wc_item.order_item_id AND (wc_items.meta_key LIKE "pa_%")
@@ -224,7 +226,7 @@ class OptionalsController extends AbstractController
                 INNER JOIN travelgeneration.wp_woocommerce_order_items AS wc_item ON wc_order.order_id = wc_item.order_id
                 INNER JOIN travelgeneration.wp_woocommerce_order_itemmeta AS wc_item_data ON wc_item.order_item_id = wc_item_data.order_item_id
                 
-                WHERE wc_order.status <> "wc-trash" AND wc_item_data.meta_value = '. $product . $condition . '
+                WHERE wc_order.status <> "wc-trash" AND wc_item_data.meta_value = ' . $product . $condition . '
                 AND EXISTS (
                     SELECT wc_itemmeta.meta_value
                     FROM travelgeneration.wp_woocommerce_order_itemmeta AS wc_itemmeta
@@ -240,10 +242,12 @@ class OptionalsController extends AbstractController
         foreach ($optionals as $optional) {
             $optional->statusdesc = $this->information->getStatusType()[$optional->status];
             $optional->item_data = json_decode($optional->item_data);
-            
+            $optional->pieces = explode(", ", $optional->post_excerpt);
+
             //dump($optional->item_data);
-            
-            $firstname = ""; $lastname = "";
+
+            $firstname = "";
+            $lastname = "";
             foreach (json_decode($optional->user_data) as $user_data) {
                 switch ($user_data->key) {
                     case 'first_name':
@@ -267,7 +271,6 @@ class OptionalsController extends AbstractController
         }
 
         return $optionals;
-
     }
 
     protected function getOptionalsColumns(array $optionals): array {
@@ -282,8 +285,7 @@ class OptionalsController extends AbstractController
         return $columns;
     }
 
-    protected function sortArrayByColumns(array $optionals, array $columns): array
-    {
+    protected function sortArrayByColumns(array $optionals, array $columns): array {
         $ordered = array();
         foreach ($columns as $column) {
             $index = array_search($column, array_column($optionals, 'key'));
@@ -291,5 +293,4 @@ class OptionalsController extends AbstractController
         }
         return $ordered;
     }
-
 }
