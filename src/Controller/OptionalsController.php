@@ -244,7 +244,7 @@ class OptionalsController extends AbstractController {
             $optional->item_data = json_decode($optional->item_data);
             $optional->pieces = explode(", ", $optional->post_excerpt);
 
-            //dump($optional->item_data);
+            //dump($optional->pieces);
 
             $firstname = "";
             $lastname = "";

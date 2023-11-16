@@ -20,6 +20,7 @@
 {% endblock %}
 
 {% block body %}
+    {% set somas = [0, 0, 0, 0, 0,  0] %}
     <div class="row">
         {% for optional in totals %}
             <div class="col-md-2">
@@ -27,6 +28,7 @@
                     <div class="card-header p-5">
                         <div class="card-title d-flex flex-column">
                             <span class="fs-2hx fw-bold text-white me-2 mb-2 lh-1 ls-n2 text-primary">{{ optional.value }}</span>
+                            <span class="fs-2hx fw-bold text-white me-2 mb-2 lh-1 ls-n2 text-primary"><div id="total_{{loop.index0}}"></div></span>
                             <span class="text-gray-600 pt-1 fw-semibold fs-6">{{ optional.key }}</span>
                         </div>
                     </div>
@@ -94,7 +96,12 @@
                             </tr>
                         </thead>
                         <tbody class="fw-bold text-gray-600">
+
+
+                            
                             {% for optional in optionals %}
+
+                                
                                 <tr>
                                     <td>
                                         <div class="text-gray-800">{{ optional.order_id }}</div>
@@ -115,6 +122,23 @@
                                                 {# {{ answer }}#}
                                                 {% if optional.pieces|length > 1 %}
                                                     {% set yes_or_no = optional.pieces[counter]|split(':') %}
+
+                                                    {% if "€" in  yes_or_no[1] %}
+                                                        {% set value_str = yes_or_no[1]|split('(') %}
+                                                        {% set value = value_str[1]|split('€') %}
+
+                                                        {#                                                        {% for key,value_in_somas in somas %}  
+                                                                                                                    {% if key == counter %}
+                                                                                                                        {% set value_in_somas = value_in_somas + value[0]  %}
+                                                                                                                        {% set somas = {(counter): value_in_somas} + somas %}
+                                                                                                                    {% endif %}
+                                                                                                                {% endfor %}#}
+
+                                                        {% set somas = { (counter): somas[counter] + value[0]} + somas %} 
+
+                                                       
+                                                    {% endif %}
+
                                                     {{ yes_or_no[1] }}
                                                 {% else %}
                                                     {{ answer }}
@@ -123,6 +147,7 @@
                                         </td>
                                         {% set counter= counter+1 %}    
                                     {% endfor %}
+
 
                                     <td class="text-end">
                                         <span class="badge py-3 px-4 fs-7 {{ optional.statusdesc.color_class }}">{{ optional.statusdesc.label }}</span>
@@ -135,7 +160,25 @@
             </div>
         </div>
     </div>
+                            
+                            
+    {% for key,value in somas %}  
+        {# {% if key == counter %}
+             {% set value_in_somas = value_in_somas + value[0]  %}
+             {% set somas = {(counter): value_in_somas} + somas %}
+         {% endif %}#}
+    <script>
+    document.getElementById("total_{{key}}").innerHTML = {{value}} + "€";
+
+        </script>
+    {% endfor %}
+
+
+                            
 {% endblock %}
 
 {% block javascripts %}
+
+
+
 {% endblock %}

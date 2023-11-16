@@ -358,9 +358,9 @@ class TripsController extends AbstractController
                         #LM - END
                         ) AS child_orders_paid_total,
 
-#AND child_order_postmeta.meta_key = "_paid_date
+#
                         #@LM - Retorna o valor pago pelo produto
-                        (select product_net_revenue
+                        (select distinct(product_net_revenue)
                         FROM travelgeneration.wp_wc_order_stats AS child_order 
                         INNER JOIN travelgeneration.wp_postmeta AS child_order_postmeta ON child_order.order_id = child_order_postmeta.post_id AND child_order_postmeta.meta_key = "_paid_date"
                         INNER JOIN travelgeneration.wp_wc_order_product_lookup on wp_wc_order_product_lookup.order_id =  child_order.order_id and wp_wc_order_product_lookup.product_id = '. $product .'
