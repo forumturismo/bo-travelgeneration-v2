@@ -67,8 +67,10 @@ class Information {
 
 
 
-        $sql = "SELECT distinct(meta_value) as name FROM travelgeneration.wp_usermeta 
-                        where meta_key = \"billing_school\" and meta_value <> '';";
+        $sql = "SELECT distinct(meta_value) as name 
+            FROM travelgeneration.wp_usermeta 
+            WHERE meta_key = \"billing_school\" AND meta_value <> '' 
+            ORDER by 1 ASC;";
 
         $stmt = $this->conn->prepare($sql);
         $resultSet = $stmt->executeQuery();
