@@ -81,47 +81,75 @@
                         <thead>
                             <tr class="text-start text-gray-400 fw-bold fs-7 text-uppercase gs-0">
                                 <th class="min-w-100px">ID Viagem</th>
-                                {#<th class="min-w-100px">Seguro</th>#}
-                                <th class="min-w-100px">Cupão</th>
+                                    {#<th class="min-w-100px">Seguro</th>#}
+
                                 <th class="text-end min-w-125px">Cliente</th>
                                 <th class="text-end min-w-125px">Escola</th>
+                                <th class="min-w-100px">Cupão</th>
                                 <th class="text-end min-w-100px">Parcelas</th>
-                                <th class="text-end min-w-100px">Produto</th>
                                 <th class="text-end min-w-100px">Por pagar</th>
                                 <th class="text-end min-w-100px">Pago</th>
+                                <th class="text-end min-w-100px">Produto</th>
+
+
                                 <th class="text-end min-w-100px">Total</th>
                                 <th class="text-end min-w-50px">Estado</th>
                             </tr>
                         </thead>
                         <tbody class="fw-bold text-gray-600">
                             {% for order in orders %}
+                                
+                                 
+                                
                                 <tr>
                                     <td>
                                         <div class="text-gray-800">{{ order.order_id }}</div>
-                                        <div>{{ order.date_created|date("d/m/Y H:i") }}</div>
+                                        <div>{{ order.date_created|date("d/m/Y") }}<br/>
+                                            {{ order.date_created|date("H:i") }}
+                                        
+                                        </div>
                                     </td>
+
+                                    <td class="text-end">
+                                        <div class="text-gray-800 text-capitalize">{{ order.customer_name }}</div>
+                                        <div class="text-gray-600">{{ order.email }}</div>
+                                        
+                                        
+                                        {% if order.phone is defined %}
+
+                                        <div class="text-gray-600">{{ order.phone }}</div>
+                                        {% endif %}
+                                        
+                                        
+                                    </td>
+                                    <td class="text-end">
+                                        <span class="text-gray-600 text-capitalize">{{ order.school }}</span>
+                                    </td>
+
                                     <td>
                                         {#<div class="text-capitalize {% if order.insurance == "Sim" %}text-success{% else %}text-danger{% endif %}">{{ order.insurance }}</div>#}
-                                                                       
+
                                         {% if order.coupon %}
                                             <div class="text-capitalize text-success">{{ order.coupon }}</div>
                                         {% else %}
                                             <div class="text-capitalize text-danger">N/A</div>
                                         {% endif %}
-                                    
-                                    
-                                    </td>
-                                    <td class="text-end">
-                                        <div class="text-gray-800 text-capitalize">{{ order.customer_name }}</div>
-                                        <div class="text-gray-600">{{ order.email }}</div>
-                                    </td>
-                                    <td class="text-end">
-                                        <span class="text-gray-600 text-capitalize">{{ order.school }}</span>
+
+
                                     </td>
                                     <td class="text-end">{{ order.child_orders }}</td>
 
-                                    {% if order.product_net_revenue == order.total %}
-                                        <td class="text-end">{{ order.product_net_revenue|number_format(2, ',', '.') }}€</td>
+                                    <!-- por pagar -->                                    
+                                    <td class="text-end">{{ order.child_orders_unpaid_total|number_format(2, ',', '.') }}€</td>
+
+
+                                    <!-- pago -->
+                                    <td class="text-end">{{ order.child_orders_paid_total|number_format(2, ',', '.') }}€</td>
+
+
+                                    <!-- valor do produto -->
+                                    {% if order.product_net_revenue|number_format(2, ',', '.') == order.child_orders_paid_total|number_format(2, ',', '.') %}
+                                        <td class="text-end text-success">{{ order.product_net_revenue|number_format(2, ',', '.') }}€</td>
                                     {% else %}
 
                                         <td class="text-end text-danger ">{{ order.product_net_revenue|number_format(2, ',', '.') }}€</td>
@@ -129,9 +157,16 @@
 
 
 
-                                    <td class="text-end">{{ order.child_orders_unpaid_total|number_format(2, ',', '.') }}€</td>
-                                    <td class="text-end">{{ order.child_orders_paid_total|number_format(2, ',', '.') }}€</td>
-                                    <td class="text-end">{{ order.total|number_format(2, ',', '.') }}€</td>
+
+                                    <!-- total da compra -->
+                                    {% if order.total == order.child_orders_paid_total %}
+                                        <td class="text-end text-success">{{ order.total|number_format(2, ',', '.') }}€</td>
+                                    {% else %}
+                                        <td class="text-end">{{ order.total|number_format(2, ',', '.') }}€</td>
+                                    {% endif %}
+
+
+
                                     <td class="text-end">
                                         <span class="badge py-3 px-4 fs-7 {{ order.statusdesc.color_class }}">{{ order.statusdesc.label }}</span>
                                     </td>

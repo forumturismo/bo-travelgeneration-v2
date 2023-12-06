@@ -48,7 +48,7 @@ class TripsController extends AbstractController
         $school         = $session->get('school');
         $search_value   = $session->get('search');
 
-        $results_per_page   = 15;
+        $results_per_page   = 50;
         $page_first_result  = ($page-1) * $results_per_page;
 
         $formStatusFilter = new OrdersSearch();
@@ -281,6 +281,7 @@ class TripsController extends AbstractController
             result.child_orders_paid, 
             result.child_orders_paid_total,
             result.product_net_revenue,
+          
             result.child_orders - child_orders_paid AS child_orders_unpaid, 
             result.child_orders_total - result.child_orders_paid_total AS child_orders_unpaid_total, 
             result.user_data
@@ -358,13 +359,11 @@ class TripsController extends AbstractController
                         #LM - END
                         ) AS child_orders_paid_total,
 
-#
                         #@LM - Retorna o valor pago pelo produto
-                        (select distinct(product_net_revenue)
-                        FROM travelgeneration.wp_wc_order_stats AS child_order 
-                        INNER JOIN travelgeneration.wp_postmeta AS child_order_postmeta ON child_order.order_id = child_order_postmeta.post_id AND child_order_postmeta.meta_key = "_paid_date"
-                        INNER JOIN travelgeneration.wp_wc_order_product_lookup on wp_wc_order_product_lookup.order_id =  child_order.order_id and wp_wc_order_product_lookup.product_id = '. $product .'
-                        WHERE wp_wc_order_product_lookup.order_id = wc_order.order_id) AS product_net_revenue,
+                        (SELECT sum(net_total) FROM travelgeneration.wp_wc_order_stats as child_order
+                        INNER JOIN travelgeneration.wp_wc_order_product_lookup on wp_wc_order_product_lookup.order_id =  child_order.order_id AND wp_wc_order_product_lookup.product_id = '. $product .'
+                        where child_order.order_id = wc_order.order_id OR child_order.parent_id = wc_order.order_id
+                        ) AS product_net_revenue,
 
                         (SELECT wp_postmeta.meta_value
                         FROM travelgeneration.wp_postmeta AS wp_postmeta 
@@ -483,6 +482,11 @@ ORDER BY result.order_id DESC' . $pagination;
             $order->child_orders_unpaid_total   = $order->date_paid == null ? $order->child_orders_unpaid_total + $order->order_total : $order->child_orders_unpaid_total;
             $order->child_orders_paid_total     = $order->date_paid == null ? $order->child_orders_paid_total : $order->child_orders_paid_total + $order->order_total;
             $order->total                       = $order->order_total + $order->child_orders_total;
+            
+            
+            
+//            $order->product_total = $order->product_total + $order->product_net_revenue;
+//            dump($order->product_total);
         }
 
         return $orders;
@@ -492,18 +496,36 @@ ORDER BY result.order_id DESC' . $pagination;
     protected function getTripsTotals($orders): array
     {
 
+//        $totals = [
+//            [ "key" => "Valor de viagem",           "value" => 0.00, "color" => "text-primary" ],
+//            [ "key" => "Valor pago de viagem",      "value" => 0.00, "color" => "text-success" ],
+//            [ "key" => "Valor em falta de viagem",  "value" => 0.00, "color" => "text-danger" ],
+//        ];
+//
+//        foreach ($orders as $order) {
+//            $totals[0]["value"] += (float) $order->total;
+//            $totals[1]["value"] += (float) $order->child_orders_paid_total;
+//            $totals[2]["value"] += (float) $order->child_orders_unpaid_total;
+//        }
+
+        
         $totals = [
-            [ "key" => "Valor de viagem",           "value" => 0.00, "color" => "text-primary" ],
+            [ "key" => "Valor de produto",           "value" => 0.00, "color" => "text-primary" ],
             [ "key" => "Valor pago de viagem",      "value" => 0.00, "color" => "text-success" ],
             [ "key" => "Valor em falta de viagem",  "value" => 0.00, "color" => "text-danger" ],
+//            [ "key" => "Valor de viagem",           "value" => 0.00, "color" => "text-primary" ],
         ];
 
         foreach ($orders as $order) {
-            $totals[0]["value"] += (float) $order->total;
+            $totals[0]["value"] += (float) $order->product_net_revenue;
             $totals[1]["value"] += (float) $order->child_orders_paid_total;
             $totals[2]["value"] += (float) $order->child_orders_unpaid_total;
+            //$totals[1]["value"] += (float) $order->total;
         }
 
+        
+        
+        
         return $totals;
 
     }
