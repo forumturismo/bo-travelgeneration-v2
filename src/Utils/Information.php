@@ -120,7 +120,11 @@ class Information {
         $sql = 'SELECT distinct product.product_id, product.sku, post.post_title FROM travelgeneration.wp_wc_product_meta_lookup AS product
 INNER JOIN travelgeneration.wp_wc_order_product_lookup AS order_items ON order_items.product_id = product.product_id
 INNER JOIN travelgeneration.wp_posts AS post ON post.id = product.product_id
-WHERE product.sku <> "" AND post.post_title NOT LIKE "%opcionais%";';
+WHERE product.sku <> "" AND post.post_title NOT LIKE "%opcionais%"
+
+and product.product_id not in(SELECT wp_posts.ID FROM wp_posts WHERE post_status like "%trash%" and post_type = "product")
+
+;';
 
         $stmt = $this->conn->prepare($sql);
         $resultSet = $stmt->executeQuery();
