@@ -20,7 +20,56 @@
 {% endblock %}
 
 {% block body %}
+    
+    
+    <div class="row mb-6">
+        
+            <div class="col-md">
+                <div class="card card-flush mb-4 mb-md-0">
+                    <div class="card-header p-5">
+                        <div class="card-title d-flex flex-column mb-0">
+                            <span class="fs-2hx fw-bold text-white me-2 mb-2 lh-1 ls-n2 text-primary "><div id="soma_totais">0€</div></span>
+                            <span class="text-gray-600 pt-1 fw-semibold fs-6"></span>
+                            <span class="text-gray-400 fw-semibold fs-6">somatorio da coluna total</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                            
+                            
+                            <div class="col-md">
+                <div class="card card-flush mb-4 mb-md-0">
+                    <div class="card-header p-5">
+                        <div class="card-title d-flex flex-column mb-0">
+                            <span class="fs-2hx fw-bold text-white me-2 mb-2 lh-1 ls-n2 text-success "><div id="soma_verdes">0€</div></span>
+                            <span class="text-gray-600 pt-1 fw-semibold fs-6"></span>
+                            <span class="text-gray-400 fw-semibold fs-6">somatorio dos verdes da coluna total</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                            
+                            <div class="col-md">
+                <div class="card card-flush mb-4 mb-md-0">
+                    <div class="card-header p-5">
+                        <div class="card-title d-flex flex-column mb-0">
+                            <span class="fs-2hx fw-bold text-white me-2 mb-2 lh-1 ls-n2 text-danger"><div id="soma_vermelhos">0€</div></span>
+                            <span class="text-gray-600 pt-1 fw-semibold fs-6"></span>
+                            <span class="text-gray-400 fw-semibold fs-6">somatorio dos vermelhos da coluna total</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+    </div>
+    
+    
+    
+    
     {% set somas = [0, 0, 0, 0, 0,  0] %}
+    {% set soma_totais = 0 %}
+    {% set soma_verdes = 0 %}
+    {% set soma_vermelhos = 0 %}
     <div class="row">
         {% for optional in totals %}
             <div class="col-md-2">
@@ -29,7 +78,7 @@
                         <div class="card-title d-flex flex-column">
                             <span class="fs-2hx fw-bold text-white me-2 mb-2 lh-1 ls-n2 text-primary">{{ optional.value }} </span>
                             <span class="fs-2hx fw-bold text-white me-2 mb-2 lh-1 ls-n2 text-primary"><div id="total_{{loop.index0}}"></div></span>
-                            <span class="text-gray-600 pt-1 fw-semibold fs-6">{{ optional.key }}</span>
+                            <span class="text-gray-600 pt-1 fw-semibold fs-6">{{ optional.key|replace({'pa_': "", "-" : " "})}}</span>
                         </div>
                     </div>
                 </div>
@@ -50,16 +99,16 @@
 
                             <div class="d-flex align-items-center fw-bold">
                                 <div class="text-gray-400 fs-7 me-2">Produto</div>
-                                {{ form_widget(form.product, { attr: { class: "form-select w-200px max-w-200px form-select-transparent text-dark fs-7 lh-1 fw-bold py-0 ps-3", "data-control": "select2", "data-dropdown-css-class": "w-300px" , "data-hide-search": "true" } }) }}
+                                {{ form_widget(form.product, { attr: { class: "form-select w-200px max-w-200px form-select-transparent text-dark fs-7 lh-1 fw-bold py-0 ps-3", "data-control": "select2", "data-dropdown-css-class": "w-300px" , "data-hide-search": "false" } }) }}
                             </div>
 
                             <div class="d-flex align-items-center fw-bold">
                                 <div class="text-gray-400 fs-7 me-2">Escola</div>
-                                {{ form_widget(form.school, { attr: { class: "form-select w-200px max-w-200px form-select-transparent text-dark fs-7 lh-1 fw-bold py-0 ps-3", "data-control": "select2", "data-dropdown-css-class": "w-300px" , "data-hide-search": "true" } }) }}
+                                {{ form_widget(form.school, { attr: { class: "form-select w-200px max-w-200px form-select-transparent text-dark fs-7 lh-1 fw-bold py-0 ps-3", "data-control": "select2", "data-dropdown-css-class": "w-300px" , "data-hide-search": "false" } }) }}
                             </div>
                             <div class="d-flex align-items-center fw-bold">
                                 <div class="text-gray-400 fs-7 me-2">Estado</div>
-                                {{ form_widget(form.status, { attr: { class: "form-select w-200px max-w-200px form-select-transparent text-dark fs-7 lh-1 fw-bold py-0 ps-3", "data-control": "select2", "data-dropdown-css-class": "w-300px" , "data-hide-search": "true" } }) }}
+                                {{ form_widget(form.status, { attr: { class: "form-select w-200px max-w-200px form-select-transparent text-dark fs-7 lh-1 fw-bold py-0 ps-3", "data-control": "select2", "data-dropdown-css-class": "w-300px" , "data-hide-search": "false" } }) }}
                             </div>
                             <div class="d-flex align-items-center position-relative my-1">
                                 <span class="svg-icon svg-icon-1 position-absolute ms-6">
@@ -90,11 +139,12 @@
                                 <th class="text-end min-w-125px">Cliente</th>
                                 <th class="text-end min-w-125px">Escola</th>
                                     {% for column in columns %}
-                                    <th class="text-center min-w-125px">{{ column }}</th>
+                                    <th class="text-center min-w-125px">{{ column|replace({'pa_': "", "-" : " "}) }}</th>
                                     {% endfor %}
 
-                                <th class="text-end">Estado</th>
+                                
                                 <th class="text-end">Total</th>
+                                <th class="text-end">Estado</th>
 
                             </tr>
                         </thead>
@@ -130,6 +180,8 @@
                                                         {% set somas = { (counter): somas[counter] + value[0]} + somas %} 
                                                         {% set soma_linha = soma_linha + value[0] %}
 
+                                                        
+                                                        
                                                     {% endif %}
 
                                                     {{ yes_or_no[1] }}
@@ -144,12 +196,23 @@
 
 
 
-                                    <td class="text-end">
-                                        <span class="badge py-3 px-4 fs-7 {{ optional.statusdesc.color_class }}">{{ optional.statusdesc.label }}</span>
-                                    </td>
+                                  
 
                                     <td class="text-end">
                                         <span class="text-uppercase">{{ soma_linha }} €</span>
+                                        
+                                        {% set soma_totais = soma_totais + soma_linha %}
+                                        
+                                        
+                                        {% if optional.statusdesc.label == 'Aguarda confirmação de pagamento' %}
+                                                            {% set soma_vermelhos = soma_vermelhos + soma_linha %}
+                                                        {% else %}
+                                                            {% set soma_verdes = soma_verdes + soma_linha %}
+                                                        {% endif %}
+                                    </td>
+                                    
+                                    <td class="text-end">
+                                        <span class="badge py-3 px-4 fs-7 {{ optional.statusdesc.color_class }}">{{ optional.statusdesc.label }}</span>
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -172,7 +235,12 @@
         </script>
     {% endfor %}
 
-
+    <script>
+        
+        document.getElementById("soma_totais").innerHTML =  {{soma_totais}} +" €";
+        document.getElementById("soma_vermelhos").innerHTML =  {{soma_vermelhos}} +" €";
+        document.getElementById("soma_verdes").innerHTML =  {{soma_verdes}} +" €";
+    </script>
 
 {% endblock %}
 

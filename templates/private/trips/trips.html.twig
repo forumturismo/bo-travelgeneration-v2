@@ -41,19 +41,23 @@
                         <span class="card-label fw-bold text-gray-800">Viagens</span>
                     </h3>
                     <div class="card-toolbar">
-                        {{ form_start(form) }}
+                        {{ form_start(form, { attr: { id: "frm"}} ) }}
+
+
+
+
                         <div class="d-flex flex-stack flex-wrap gap-4">
                             <div class="d-flex align-items-center fw-bold">
                                 <div class="text-gray-400 fs-7 me-2">Viagem</div>
-                                {{ form_widget(form.product, { attr: { class: "form-select w-200px max-w-200px form-select-transparent text-dark fs-7 lh-1 fw-bold py-0 ps-3", "data-control": "select2", "data-dropdown-css-class": "w-300px" , "data-hide-search": "true" } }) }}
+                                {{ form_widget(form.product, { attr: { class: "form-select w-200px max-w-200px form-select-transparent text-dark fs-7 lh-1 fw-bold py-0 ps-3", "data-control": "select2", "data-dropdown-css-class": "w-300px" , "data-hide-search": "false" } }) }}
                             </div>
                             <div class="d-flex align-items-center fw-bold">
                                 <div class="text-gray-400 fs-7 me-2">Escola</div>
-                                {{ form_widget(form.school, { attr: { class: "form-select w-200px max-w-200px form-select-transparent text-dark fs-7 lh-1 fw-bold py-0 ps-3", "data-control": "select2", "data-dropdown-css-class": "w-300px" , "data-hide-search": "true" } }) }}
+                                {{ form_widget(form.school, { attr: { class: "form-select w-200px max-w-200px form-select-transparent text-dark fs-7 lh-1 fw-bold py-0 ps-3", "data-control": "select2", "data-dropdown-css-class": "w-300px" , "data-hide-search": "false" } }) }}
                             </div>
                             <div class="d-flex align-items-center fw-bold">
                                 <div class="text-gray-400 fs-7 me-2">Estado</div>
-                                {{ form_widget(form.status, { attr: { class: "form-select w-200px max-w-200px form-select-transparent text-dark fs-7 lh-1 fw-bold py-0 ps-3", "data-control": "select2", "data-dropdown-css-class": "w-300px" , "data-hide-search": "true" } }) }}
+                                {{ form_widget(form.status, { attr: { class: "form-select w-200px max-w-200px form-select-transparent text-dark fs-7 lh-1 fw-bold py-0 ps-3", "data-control": "select2", "data-dropdown-css-class": "w-300px" , "data-hide-search": "false" } }) }}
                             </div>
                             <div class="d-flex align-items-center position-relative my-1">
                                 <span class="svg-icon svg-icon-1 position-absolute ms-6">
@@ -72,6 +76,18 @@
                                 </span>
                                 Filtrar
                             </button>
+
+                            <button id="btn_reset" type="reset" class="btn btn-sm btn-flex h-40px py-2 bg-secondary btn-color-gray-700 btn-active-color-primary fw-bold">
+                                <span class="svg-icon svg-icon-6 svg-icon-muted me-1">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M19.0759 3H4.72777C3.95892 3 3.47768 3.83148 3.86067 4.49814L8.56967 12.6949C9.17923 13.7559 9.5 14.9582 9.5 16.1819V19.5072C9.5 20.2189 10.2223 20.7028 10.8805 20.432L13.8805 19.1977C14.2553 19.0435 14.5 18.6783 14.5 18.273V13.8372C14.5 12.8089 14.8171 11.8056 15.408 10.964L19.8943 4.57465C20.3596 3.912 19.8856 3 19.0759 3Z" fill="currentColor" />
+                                    </svg>
+                                </span>
+                                Limpar
+                            </button>
+
+
+
                         </div>
                         {{ form_end(form) }}
                     </div>
@@ -98,29 +114,29 @@
                         </thead>
                         <tbody class="fw-bold text-gray-600">
                             {% for order in orders %}
-                                
-                                 
-                                
+
+
+
                                 <tr>
                                     <td>
                                         <div class="text-gray-800">{{ order.order_id }}</div>
                                         <div>{{ order.date_created|date("d/m/Y") }}<br/>
                                             {{ order.date_created|date("H:i") }}
-                                        
+
                                         </div>
                                     </td>
 
                                     <td class="text-end">
                                         <div class="text-gray-800 text-capitalize">{{ order.customer_name }}</div>
                                         <div class="text-gray-600">{{ order.email }}</div>
-                                        
-                                        
+
+
                                         {% if order.phone is defined %}
 
-                                        <div class="text-gray-600">{{ order.phone }}</div>
+                                            <div class="text-gray-600">{{ order.phone }}</div>
                                         {% endif %}
-                                        
-                                        
+
+
                                     </td>
                                     <td class="text-end">
                                         <span class="text-gray-600 text-capitalize">{{ order.school }}</span>
@@ -193,4 +209,27 @@
 {% endblock %}
 
 {% block javascripts %}
+    <script>
+
+
+        $(function () {
+            $("#btn_reset").click(function () {
+
+                $("#frm")[0].reset();
+                $("#form_product").trigger("change");
+                $("#form_school").trigger("change");
+                $("#form_status").trigger("change");
+
+{#                $("#frm")[0].reset();
+                $("#form_school").trigger("change");
+
+                $("#frm")[0].reset();
+                $("#form_status").trigger("change");#}
+            });
+        });
+
+
+
+    </script>
+
 {% endblock %}

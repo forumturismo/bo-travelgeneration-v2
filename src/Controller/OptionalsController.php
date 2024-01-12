@@ -124,36 +124,64 @@ class OptionalsController extends AbstractController {
      * @Route("/export/{product}", name="export_optionals", methods={"GET","POST"})
      */
     public function exportOptionals(Request $request, int $product): StreamedResponse {
+//        $columns = [
+//            'Id',
+//            'Estado',
+//            'Data de criação',
+//            "Nome",
+//            "Endereço email",
+//            "Escola",
+//            "Contacto",
+//        ];
+
+        
         $columns = [
             'Id',
-            'Estado',
             'Data de criação',
             "Nome",
             "Endereço email",
-            "Escola",
-            "Contacto",
+            "Escola"
         ];
 
+        
+        
         $optionals = $this->getOptionalsData("", $product, '');
 
         //Append optionals columns
         $optionalsColumns = $this->getOptionalsColumns($optionals);
         $columns = array_merge($columns, $optionalsColumns);
+        
+        $columns = array_merge($columns, ["Total", "Estado"]);
 
         $optionalsToExport = [];
         foreach ($optionals as $optional) {
             $optional->item_data = $this->sortArrayByColumns($optional->item_data, $optionalsColumns);
+//            $optionalData = [
+//                "id" => $optional->order_id,
+//                "status" => $optional->statusdesc["label"],
+//                "date_created" => $optional->date_created,
+//                "nome" => $optional->customer_name,
+//                "email" => $optional->email ?? '',
+//                "school" => $optional->school ?? '',
+//                "phone" => $optional->phone ?? '',
+//            ];
+
             $optionalData = [
                 "id" => $optional->order_id,
-                "status" => $optional->statusdesc["label"],
                 "date_created" => $optional->date_created,
                 "nome" => $optional->customer_name,
                 "email" => $optional->email ?? '',
                 "school" => $optional->school ?? '',
-                "phone" => $optional->phone ?? '',
             ];
-            $optionalsToExport[] = array_merge($optionalData, $optional->item_data);
+
+            $optionalsToExport[] = array_merge($optionalData, $optional->item_data, ["Total"=>$optional->total_sales ?? '', "status" => $optional->statusdesc["label"]]);
+            
+            //$optionalsToExport[] = array_merge($optionalsToExport,["Total"=>0000, "status" => $optional->statusdesc["label"]]);
+            
+            //dump($optionalsToExport);
+            
         }
+
 
         return $this->createExcelSpreadsheet("Opcionais.xlsx", $columns, $optionalsToExport);
     }
@@ -226,7 +254,8 @@ class OptionalsController extends AbstractController {
                 INNER JOIN travelgeneration.wp_woocommerce_order_items AS wc_item ON wc_order.order_id = wc_item.order_id
                 INNER JOIN travelgeneration.wp_woocommerce_order_itemmeta AS wc_item_data ON wc_item.order_item_id = wc_item_data.order_item_id
                 
-                WHERE wc_order.status <> "wc-trash" AND wc_item_data.meta_value = ' . $product . $condition . '
+                WHERE wc_order.status <> "wc-trash" 
+                AND wc_item_data.meta_value = ' . $product . $condition . ' and wc_order.order_id not in(SELECT wp_posts.ID FROM wp_posts WHERE post_status like "%trash%" and post_type = "shop_order") 
                 AND EXISTS (
                     SELECT wc_itemmeta.meta_value
                     FROM travelgeneration.wp_woocommerce_order_itemmeta AS wc_itemmeta

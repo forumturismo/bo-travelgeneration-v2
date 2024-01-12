@@ -44,6 +44,7 @@ class TripsController extends AbstractController
         $session = $request->getSession();
 
         $product        = $session->get('product') ?? 1939;
+        //$product        = $session->get('product') ?? 0;
         $slug           = $session->get('slug');
         $school         = $session->get('school');
         $search_value   = $session->get('search');
@@ -361,8 +362,16 @@ class TripsController extends AbstractController
 
                         #@LM - Retorna o valor pago pelo produto
                         (SELECT sum(net_total) FROM travelgeneration.wp_wc_order_stats as child_order
-                        INNER JOIN travelgeneration.wp_wc_order_product_lookup on wp_wc_order_product_lookup.order_id =  child_order.order_id AND wp_wc_order_product_lookup.product_id = '. $product .'
-                        where child_order.order_id = wc_order.order_id OR child_order.parent_id = wc_order.order_id
+                        INNER JOIN travelgeneration.wp_wc_order_product_lookup on wp_wc_order_product_lookup.order_id =  child_order.order_id ';
+                        
+
+
+        if($product != 0):
+    $sql = $sql .'AND wp_wc_order_product_lookup.product_id = '. $product ;
+endif;
+
+        
+                        $sql = $sql .' where child_order.order_id = wc_order.order_id OR child_order.parent_id = wc_order.order_id
                         ) AS product_net_revenue,
 
                         (SELECT wp_postmeta.meta_value
@@ -392,9 +401,17 @@ class TripsController extends AbstractController
                 INNER JOIN travelgeneration.wp_woocommerce_order_items AS wc_item ON wc_order.order_id = wc_item.order_id
                 INNER JOIN travelgeneration.wp_woocommerce_order_itemmeta AS wc_item_data ON wc_item.order_item_id = wc_item_data.order_item_id
                 
-                WHERE wc_order.parent_id = 0 AND wc_order.status <> "wc-trash" AND wc_item_data.meta_value = '. $product .'
-                #LM - BEGIN
-                and wc_order.order_id not in(SELECT wp_posts.ID FROM wp_posts WHERE post_status like "%trash%" and post_type = "shop_order")
+                WHERE wc_order.parent_id = 0 AND wc_order.status <> "wc-trash" ';
+                
+if($product != 0):
+    $sql = $sql .'AND wc_item_data.meta_value = '. $product;
+endif;
+
+
+
+
+#LM - BEGIN
+                $sql = $sql .' and wc_order.order_id not in(SELECT wp_posts.ID FROM wp_posts WHERE post_status like "%trash%" and post_type = "shop_order")
                 #LM - END
                 ' . $search . '
             ) AS result 
