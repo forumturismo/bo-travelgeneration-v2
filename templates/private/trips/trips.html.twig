@@ -11,10 +11,10 @@
 {% endblock %}
 
 {% block pageActions %}
-{#    <form action="{{ path('export_trips', { product: product } ) }}" method="post">
+    <form action="{{ path('export_trips', { product: product } ) }}" method="post">
         <input type="hidden" name="json" value="{{ search }}">
         <button class="btn btn-sm fw-bold btn-primary" type="submit">Exportar dados</button>
-    </form>#}
+    </form>
 {% endblock %}
 
 {% block body %}

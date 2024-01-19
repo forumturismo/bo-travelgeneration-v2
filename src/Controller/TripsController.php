@@ -96,7 +96,7 @@ class TripsController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $page               = 1;
             $page_first_result  = 0;
-            $product            = $form->get("product")->getData() ? $form->get("product")->getData()->value : '';
+            $product            = $form->get("product")->getData() ? $form->get("product")->getData()->value : '0';
             $slug               = $form->get("status")->getData() ? $form->get("status")->getData()->slug : '';
             $school             = $form->get("school")->getData() ? $form->get("school")->getData()->value : '';
             $search_value       = $form->get("search")->getData() ? $form->get("search")->getData() : '';
