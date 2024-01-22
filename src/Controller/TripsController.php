@@ -527,15 +527,22 @@ class TripsController extends AbstractController {
 
 
         $totals = [
-            ["key" => "Valor de produto", "value" => 0.00, "color" => "text-primary"],
-            ["key" => "Valor pago de viagem", "value" => 0.00, "color" => "text-success"],
-            ["key" => "Valor em falta de viagem", "value" => 0.00, "color" => "text-danger"],
+            ["key" => "VALOR TOTAL","desc" => "Somatório de todas as viagens (sem o valor dos opcionais)", "value" => 0.00, "color" => "text-primary"],
+            ["key" => "VALOR PAGO", "desc" => "Somatório de todos os pagamentos efetuados (sem o valor dos opcionais).", "value" => 0.00, "color" => "text-success"],
+            ["key" => "VALOR POR PAGAR", "desc" => "Somatório de todos os pagamentos em falta (sem o valor dos opcionais).", "value" => 0.00, "color" => "text-danger"],
 //            [ "key" => "Valor de viagem",           "value" => 0.00, "color" => "text-primary" ],
         ];
 
         foreach ($orders as $order) {
             $totals[0]["value"] += (float) $order->product_net_revenue;
-            $totals[1]["value"] += (float) $order->child_orders_paid_total;
+            
+            if((float) $order->child_orders_paid_total > (float) $order->product_net_revenue):
+                $totals[1]["value"] += (float) $order->product_net_revenue;
+            else:
+                $totals[1]["value"] += (float) $order->child_orders_paid_total;
+            endif;
+            
+            
             $totals[2]["value"] += (float) $order->child_orders_unpaid_total;
             //$totals[1]["value"] += (float) $order->total;
         }
