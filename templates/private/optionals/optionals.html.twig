@@ -158,6 +158,12 @@
                                     <td class="text-end">
                                         <div class="text-gray-800 text-capitalize">{{ optional.customer_name }}</div>
                                         <div class="text-gray-600">{{ optional.email }}</div>
+                                        
+                                        {% if optional.phone is defined %}
+
+                                            <div class="text-gray-600">{{ optional.phone }}</div>
+                                        {% endif %}
+                                        
                                     </td>
                                     <td class="text-end">
                                         <div class="text-gray-800 text-capitalize">{{ optional.school }}</div>

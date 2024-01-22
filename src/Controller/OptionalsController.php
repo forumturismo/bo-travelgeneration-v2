@@ -134,23 +134,21 @@ class OptionalsController extends AbstractController {
 //            "Contacto",
 //        ];
 
-        
+
         $columns = [
             'Id',
             'Data de criação',
             "Nome",
             "Endereço email",
+            "Telefone/Telemóvel",
             "Escola"
         ];
 
-        
-        
         $optionals = $this->getOptionalsData("", $product, '');
 
         //Append optionals columns
         $optionalsColumns = $this->getOptionalsColumns($optionals);
         $columns = array_merge($columns, $optionalsColumns);
-        
         $columns = array_merge($columns, ["Total", "Estado"]);
 
         $optionalsToExport = [];
@@ -171,15 +169,23 @@ class OptionalsController extends AbstractController {
                 "date_created" => $optional->date_created,
                 "nome" => $optional->customer_name,
                 "email" => $optional->email ?? '',
+                "phone" => $optional->phone ?? '',
                 "school" => $optional->school ?? '',
             ];
 
-            $optionalsToExport[] = array_merge($optionalData, $optional->item_data, ["Total"=>$optional->total_sales ?? '', "status" => $optional->statusdesc["label"]]);
-            
+            $totalLine = 0;
+            foreach ($optional->pieces as $piece) {
+                if (str_contains($piece, '€')) {
+                    $begin = strpos($piece, "(");
+                    $end = strpos($piece, "€") - 1;
+                    $value = substr($piece, $begin + 1, intval($end - $begin));
+                    $totalLine = $totalLine + $value;
+                }
+            }
+
+            $optionalsToExport[] = array_merge($optionalData, $optional->item_data, ["Total" => $totalLine ?? '', "status" => $optional->statusdesc["label"]]);
             //$optionalsToExport[] = array_merge($optionalsToExport,["Total"=>0000, "status" => $optional->statusdesc["label"]]);
-            
-            //dump($optionalsToExport);
-            
+
         }
 
 

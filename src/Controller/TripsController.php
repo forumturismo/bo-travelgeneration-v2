@@ -24,14 +24,12 @@ use function PHPUnit\Framework\stringContains;
 /**
  * @Route("/trips")
  */
-class TripsController extends AbstractController
-{
+class TripsController extends AbstractController {
 
     private $information;
     private $conn;
 
-    public function __construct(ManagerRegistry $doctrine)
-    {
+    public function __construct(ManagerRegistry $doctrine) {
         $this->information = new Information($doctrine);
         $this->conn = $this->information->getConn();
     }
@@ -39,125 +37,126 @@ class TripsController extends AbstractController
     /**
      * @Route("/{page}", name="page_trips", methods={"GET","POST"}, requirements={"page"="\d+"})
      */
-    public function pageTrips(Request $request, int $page = 1): Response
-    {
+    public function pageTrips(Request $request, int $page = 1): Response {
         $session = $request->getSession();
 
-        $product        = $session->get('product') ?? 0;
+        $product = $session->get('product') ?? 0;
         //$product        = $session->get('product') ?? 0;
-        $slug           = $session->get('slug');
-        $school         = $session->get('school');
-        $search_value   = $session->get('search');
+        $slug = $session->get('slug');
+        $school = $session->get('school');
+        $search_value = $session->get('search');
 
-        $results_per_page   = 50;
-        $page_first_result  = ($page-1) * $results_per_page;
+        $results_per_page = 50;
+        $page_first_result = ($page - 1) * $results_per_page;
 
         $formStatusFilter = new OrdersSearch();
 
         $form = $this->createFormBuilder($formStatusFilter)
-            ->add('product', ChoiceType::class, [
-                'label' => "Filtrar por viagem",
-                'placeholder' => 'Todos as viagens',
-                'choices' => $this->information->getProducts(),
-                'required' => false,
-                'choice_value' => 'value',
-                'choice_label' => 'trip',
-                'data' => (object) [ 'value' => $product ]
-            ])
-            ->add('school', ChoiceType::class, [
-                'label' => "Filtrar por escola",
-                'placeholder' => 'Todas as escolas',
-                'choices' => $this->information->getSchools(),
-                'required' => false,
-                'choice_value' => 'value',
-                'choice_label' => 'name',
-                'data' => (object) [ 'value' => $school ]
-            ])
-            ->add('status', ChoiceType::class, [
-                'label' => "Filtrar por estado",
-                'placeholder' => 'Todos os estados',
-                'choices' => $this->information->getStatus(),
-                'required' => false,
-                'choice_value' => 'slug',
-                'choice_label' => 'name',
-                'data' => (object) [ 'slug' => $slug ]
-            ])
-            ->add('search', TextType::class, [
-                'attr' => array(
-                    'placeholder' => 'Pesquisar por id, nome ou email'
-                ),
-                'required' => false,
-                'data' => $search_value
-            ])
-            ->getForm();
+                ->add('product', ChoiceType::class, [
+                    'label' => "Filtrar por viagem",
+                    'placeholder' => 'Todos as viagens',
+                    'choices' => $this->information->getProducts(),
+                    'required' => false,
+                    'choice_value' => 'value',
+                    'choice_label' => 'trip',
+                    'data' => (object) ['value' => $product]
+                ])
+                ->add('school', ChoiceType::class, [
+                    'label' => "Filtrar por escola",
+                    'placeholder' => 'Todas as escolas',
+                    'choices' => $this->information->getSchools(),
+                    'required' => false,
+                    'choice_value' => 'value',
+                    'choice_label' => 'name',
+                    'data' => (object) ['value' => $school]
+                ])
+                ->add('status', ChoiceType::class, [
+                    'label' => "Filtrar por estado",
+                    'placeholder' => 'Todos os estados',
+                    'choices' => $this->information->getStatus(),
+                    'required' => false,
+                    'choice_value' => 'slug',
+                    'choice_label' => 'name',
+                    'data' => (object) ['slug' => $slug]
+                ])
+                ->add('search', TextType::class, [
+                    'attr' => array(
+                        'placeholder' => 'Pesquisar por id, nome ou email'
+                    ),
+                    'required' => false,
+                    'data' => $search_value
+                ])
+                ->getForm();
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $page               = 1;
-            $page_first_result  = 0;
-            $product            = $form->get("product")->getData() ? $form->get("product")->getData()->value : '0';
-            $slug               = $form->get("status")->getData() ? $form->get("status")->getData()->slug : '';
-            $school             = $form->get("school")->getData() ? $form->get("school")->getData()->value : '';
-            $search_value       = $form->get("search")->getData() ? $form->get("search")->getData() : '';
+            $page = 1;
+            $page_first_result = 0;
+            $product = $form->get("product")->getData() ? $form->get("product")->getData()->value : '0';
+            $slug = $form->get("status")->getData() ? $form->get("status")->getData()->slug : '';
+            $school = $form->get("school")->getData() ? $form->get("school")->getData()->value : '';
+            $search_value = $form->get("search")->getData() ? $form->get("search")->getData() : '';
             $session->set('product', $product);
-            $session->set('slug',    $slug);
-            $session->set('school',  $school);
-            $session->set('search',  $search_value);
+            $session->set('slug', $slug);
+            $session->set('school', $school);
+            $session->set('search', $search_value);
         }
 
         $search = $school ? ' AND EXISTS (
-		    SELECT wc_usermetadata.meta_value FROM travelgeneration.wp_usermeta as wc_usermetadata WHERE wc_usermetadata.user_id = wc_customer.user_id AND wc_usermetadata.meta_value = "'. $school . '"
+		    SELECT wc_usermetadata.meta_value FROM travelgeneration.wp_usermeta as wc_usermetadata WHERE wc_usermetadata.user_id = wc_customer.user_id AND wc_usermetadata.meta_value = "' . $school . '"
         )' : '';
 
-        $search .= $slug ? ' AND wc_order.status = "'. $slug .'"' : '';
+        $search .= $slug ? ' AND wc_order.status = "' . $slug . '"' : '';
 
-        $search .= $search_value ? ' AND (wc_order.order_id LIKE "%'. $search_value .'%"
+        $search .= $search_value ? ' AND (wc_order.order_id LIKE "%' . $search_value . '%"
         OR EXISTS (
             SELECT wc_user_data.meta_value FROM travelgeneration.wp_usermeta as wc_user_data WHERE wc_user_data.user_id = wc_customer.user_id
-            AND ((wc_user_data.meta_key = "last_name" AND wc_user_data.meta_value LIKE "%'. $search_value .'%") OR (wc_user_data.meta_key = "first_name" AND wc_user_data.meta_value LIKE "%'. $search_value .'%") OR (wc_user_data.meta_key = "billing_email" AND wc_user_data.meta_value LIKE "%'. $search_value .'%"))
+            AND ((wc_user_data.meta_key = "last_name" AND wc_user_data.meta_value LIKE "%' . $search_value . '%") OR (wc_user_data.meta_key = "first_name" AND wc_user_data.meta_value LIKE "%' . $search_value . '%") OR (wc_user_data.meta_key = "billing_email" AND wc_user_data.meta_value LIKE "%' . $search_value . '%"))
         ))' : '';
 
-        $ordersCount        = $this->getTripsCount($search, $product);
-        $number_of_pages    = ceil($ordersCount / $results_per_page);
+        $ordersCount = $this->getTripsCount($search, $product);
+        $number_of_pages = ceil($ordersCount / $results_per_page);
 
         $orders = $this->getTripsData($search, $product, $page_first_result, $results_per_page);
-        
+
         $totals = $this->getTripsTotals($this->getTripsData($search, $product));
 
         return $this->render('private/trips/trips.html.twig', [
-            'form'              => $form->createView(),
-            'orders'            => $orders,
-            'status'            => $this->information->getStatus(),
-            'product'           => $product,
-            'search'            => json_encode($search),
-            'current_page'      => $page,
-            'number_of_pages'   => $number_of_pages,
-            'totals'            => $totals
+                    'form' => $form->createView(),
+                    'orders' => $orders,
+                    'status' => $this->information->getStatus(),
+                    'product' => $product,
+                    'search' => json_encode($search),
+                    'current_page' => $page,
+                    'number_of_pages' => $number_of_pages,
+                    'totals' => $totals
         ]);
     }
 
     /**
      * @Route("/export/{product}", name="export_trips", methods={"GET","POST"}, requirements={"product"="\d+"})
      */
-    public function exportOrders(Request $request, int $product): StreamedResponse
-    {
+    public function exportOrders(Request $request, int $product): StreamedResponse {
         $columns = [
             'Id',
-            'Estado',
 //            'Seguro',
-              'Cupão',
             'Data de criação',
+            "Nome",
+            "Endereço email",
+            "Telefone/Telemóvel",
+            "Escola",
+            'Cupão',
             'Parcelas',
             'Por pagar',
             'Pago',
+            'Produto',
             'Total',
-            'Método de pagamento',
-            "Nome",
-            "Telefone/Telemóvel",
-            "Endereço email",
-            "Escola",
-            "NIF",
+            'Estado',
+            
+            'Metodo de Pagamento',
+            'Nif',
+            
             "Data de nascimento",
             "Nacionalidade",
             "Documento (tipo)",
@@ -170,7 +169,8 @@ class TripsController extends AbstractController
             "Contacto Opcional Emergência (Tipo)",
             "Contacto Opcional Emergência (Nome)",
             "Contacto Opcional Emergência (Email)",
-            "Contacto Opcional Emergência (Telemóvel)"
+            "Contacto Opcional Emergência (Telemóvel)",
+            
         ];
 
         $search = json_decode($request->get("json"));
@@ -179,46 +179,49 @@ class TripsController extends AbstractController
         $ordersToExport = [];
         foreach ($orders as $order) {
             $ordersToExport[] = [
-                "id"                            => $order->order_id,
-                "status"                        => $order->statusdesc["label"],
+                "id" => $order->order_id,
 //                "insurance"                     => $order->insurance,
-                  "coupon"                     => $order->coupon,
-                "date_created"                  => $order->date_created,
-                "installments"                  => (integer) $order->child_orders,
-                "child_orders_unpaid_total"     => $order->child_orders_unpaid_total,
-                "child_orders_paid_total"       => $order->child_orders_paid_total,
-                "total"                         => $order->total,
-                "payment_method"                => $order->payment_method,
-                "nome"                          => $order->customer_name,
-                "phone"                         => $order->phone                ?? '',
-                "email"                         => $order->email                ?? '',
-                "school"                        => $order->school               ?? '',
-                "nif"                           => $order->nif                  ?? '',
-                "birthdate"                     => $order->birthdate            ?? '',
-                "nationality"                   => $order->nationality          ?? '',
-                "doc_type"                      => $order->doc_type             ?? '',
-                "doc_number"                    => $order->doc_number           ?? '',
-                "doc_expiration_date"           => $order->doc_expiration_date  ?? '',
-                "billing_emergency_type"            => $order->billing_emergency_type  ?? '',
-                "billing_emergency_name"            => $order->billing_emergency_name  ?? '',
-                "billing_emergency_email"           => $order->billing_emergency_email  ?? '',
-                "billing_emergency_phone"           => $order->billing_emergency_phone  ?? '',
-                "billing_emergency_optional_type"   => $order->billing_emergency_optional_type  ?? '',
-                "billing_emergency_optional_name"   => $order->billing_emergency_optional_name  ?? '',
-                "billing_emergency_optional_email"  => $order->billing_emergency_optional_email  ?? '',
-                "billing_emergency_optional_phone"  => $order->billing_emergency_optional_phone  ?? ''
+                "date_created" => $order->date_created,
+                "nome" => $order->customer_name,
+                "email" => $order->email ?? '',
+                "phone" => $order->phone ?? '',
+                "school" => $order->school ?? '',
+                "coupon" => $order->coupon,
+                "installments" => (integer) $order->child_orders,
+                "child_orders_unpaid_total" => $order->child_orders_unpaid_total,
+                "child_orders_paid_total" => $order->child_orders_paid_total,
+                "product" => $order->product_net_revenue,
+                "total" => $order->total,
+                "status" => $order->statusdesc["label"],
+                
+                "payment_method" => $order->payment_method,
+                "nif" => $order->nif ?? '',
+                                
+                "birthdate" => $order->birthdate ?? '',
+                "nationality" => $order->nationality ?? '',
+                "doc_type" => $order->doc_type ?? '',
+                "doc_number" => $order->doc_number ?? '',
+                "doc_expiration_date" => $order->doc_expiration_date ?? '',
+                "billing_emergency_type" => $order->billing_emergency_type ?? '',
+                "billing_emergency_name" => $order->billing_emergency_name ?? '',
+                "billing_emergency_email" => $order->billing_emergency_email ?? '',
+                "billing_emergency_phone" => $order->billing_emergency_phone ?? '',
+                "billing_emergency_optional_type" => $order->billing_emergency_optional_type ?? '',
+                "billing_emergency_optional_name" => $order->billing_emergency_optional_name ?? '',
+                "billing_emergency_optional_email" => $order->billing_emergency_optional_email ?? '',
+                "billing_emergency_optional_phone" => $order->billing_emergency_optional_phone ?? '',
+                
             ];
         }
 
         return $this->createExcelSpreadsheet("Viagens.xlsx", $columns, $ordersToExport);
     }
 
-    protected function createExcelSpreadsheet($filename, $columns, $rows): StreamedResponse
-    {
+    protected function createExcelSpreadsheet($filename, $columns, $rows): StreamedResponse {
         $contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
         $response = new StreamedResponse();
         $response->headers->set('Content-Type', $contentType);
-        $response->headers->set('Content-Disposition', 'attachment;filename="'.$filename.'"');
+        $response->headers->set('Content-Disposition', 'attachment;filename="' . $filename . '"');
         $response->setPrivate();
         $response->headers->addCacheControlDirective('no-cache', true);
         $response->headers->addCacheControlDirective('must-revalidate', true);
@@ -234,49 +237,45 @@ class TripsController extends AbstractController
         $line = 2;
         foreach ($rows as $row) {
             $columnLetter = 'A';
-            foreach($row as $value) {
-                $sheet->setCellValue($columnLetter. $line, $value);
+            foreach ($row as $value) {
+                $sheet->setCellValue($columnLetter . $line, $value);
                 $columnLetter++;
             }
             $line++;
         }
 
         $writer = new Xlsx($spreadsheet);
-        $response->setCallback(function() use ($writer) {
+        $response->setCallback(function () use ($writer) {
             $writer->save('php://output');
         });
 
         return $response;
-
     }
 
-    protected function getTripsCount($search, $product): int
-    {
+    protected function getTripsCount($search, $product): int {
 
         $sql = 'SELECT count(*) as total
                 FROM travelgeneration.wp_wc_order_stats AS wc_order
                 
                 INNER JOIN travelgeneration.wp_wc_customer_lookup AS wc_customer ON wc_order.customer_id = wc_customer.customer_id
                 INNER JOIN travelgeneration.wp_woocommerce_order_items AS wc_item ON wc_order.order_id = wc_item.order_id ';
-                
 
-                if($product != 0):
-                    $sql = $sql .' INNER JOIN travelgeneration.wp_woocommerce_order_itemmeta AS wc_item_data ON wc_item.order_item_id = wc_item_data.order_item_id ';
-                endif;
-                
-                $sql = $sql .' WHERE wc_order.parent_id = 0 AND wc_order.status <> "wc-trash" ';
-        
-                if($product != 0):
-                    $sql = $sql .' AND wc_item_data.meta_value = '. $product .' ';
-                endif;
+        if ($product != 0):
+            $sql = $sql . ' INNER JOIN travelgeneration.wp_woocommerce_order_itemmeta AS wc_item_data ON wc_item.order_item_id = wc_item_data.order_item_id ';
+        endif;
 
-               $sql = $sql .' ' . $search . ' ORDER BY wc_order.order_id DESC';
+        $sql = $sql . ' WHERE wc_order.parent_id = 0 AND wc_order.status <> "wc-trash" ';
+
+        if ($product != 0):
+            $sql = $sql . ' AND wc_item_data.meta_value = ' . $product . ' ';
+        endif;
+
+        $sql = $sql . ' ' . $search . ' ORDER BY wc_order.order_id DESC';
 
         $stmt = $this->conn->prepare($sql);
         $resultSet = $stmt->executeQuery();
 
         return (int) $resultSet->fetchNumeric()[0];
-
     }
 
     protected function getTripsData($search, $product, $page_first_result = null, $results_per_page = null) {
@@ -372,15 +371,12 @@ class TripsController extends AbstractController
                         #@LM - Retorna o valor pago pelo produto
                         (SELECT sum(product_net_revenue) FROM travelgeneration.wp_wc_order_stats as child_order
                         INNER JOIN travelgeneration.wp_wc_order_product_lookup on wp_wc_order_product_lookup.order_id =  child_order.order_id ';
-                        
 
+        if ($product != 0):
+            $sql = $sql . ' AND wp_wc_order_product_lookup.product_id = ' . $product;
+        endif;
 
-                        if($product != 0):
-                            $sql = $sql .' AND wp_wc_order_product_lookup.product_id = '. $product ;
-                        endif;
-
-        
-                        $sql = $sql .' where (child_order.order_id = wc_order.order_id OR child_order.parent_id = wc_order.order_id) and variation_id = 0
+        $sql = $sql . ' where (child_order.order_id = wc_order.order_id OR child_order.parent_id = wc_order.order_id) and variation_id = 0
                         ) AS product_net_revenue,
 
                         (SELECT wp_postmeta.meta_value
@@ -408,17 +404,17 @@ class TripsController extends AbstractController
             
                 INNER JOIN travelgeneration.wp_wc_customer_lookup AS wc_customer ON wc_order.customer_id = wc_customer.customer_id
                 INNER JOIN travelgeneration.wp_woocommerce_order_items AS wc_item ON wc_order.order_id = wc_item.order_id ';
-                if($product != 0):
-                    $sql = $sql . ' INNER JOIN travelgeneration.wp_woocommerce_order_itemmeta AS wc_item_data ON wc_item.order_item_id = wc_item_data.order_item_id ';
-                endif;
-                
-               $sql = $sql .' WHERE wc_order.parent_id = 0 AND wc_order.status <> "wc-trash" ';
-                
-                if($product != 0):
-                    $sql = $sql .' AND wc_item_data.meta_value = '. $product;
-                endif;
+        if ($product != 0):
+            $sql = $sql . ' INNER JOIN travelgeneration.wp_woocommerce_order_itemmeta AS wc_item_data ON wc_item.order_item_id = wc_item_data.order_item_id ';
+        endif;
 
-                $sql = $sql .' and wc_order.order_id not in(SELECT wp_posts.ID FROM wp_posts WHERE post_status like "%trash%" and post_type = "shop_order")
+        $sql = $sql . ' WHERE wc_order.parent_id = 0 AND wc_order.status <> "wc-trash" ';
+
+        if ($product != 0):
+            $sql = $sql . ' AND wc_item_data.meta_value = ' . $product;
+        endif;
+
+        $sql = $sql . ' and wc_order.order_id not in(SELECT wp_posts.ID FROM wp_posts WHERE post_status like "%trash%" and post_type = "shop_order")
                
                 ' . $search . '
             ) AS result 
@@ -430,11 +426,12 @@ class TripsController extends AbstractController
         $orders = json_decode(json_encode($resultSet->fetchAllAssociative()));
 
         foreach ($orders as $order) {
-            
-           // dump($order);
-            
+
+            // dump($order);
+
             $order->statusdesc = $this->information->getStatusType()[$order->status];
-            $firstname = ""; $lastname = "";
+            $firstname = "";
+            $lastname = "";
 
             $order->insurance = (str_contains($order->insurance, "sim")) ? "Sim" : "Não";
 
@@ -502,23 +499,19 @@ class TripsController extends AbstractController
 
             $order->customer_name = $firstname . " " . $lastname;
 
-            $order->child_orders                = $order->child_orders == 0 ? "--" : $order->child_orders + 1;
-            $order->child_orders_unpaid_total   = $order->date_paid == null ? $order->child_orders_unpaid_total + $order->order_total : $order->child_orders_unpaid_total;
-            $order->child_orders_paid_total     = $order->date_paid == null ? $order->child_orders_paid_total : $order->child_orders_paid_total + $order->order_total;
-            $order->total                       = $order->order_total + $order->child_orders_total;
-            
-            
-            
+            $order->child_orders = $order->child_orders == 0 ? "--" : $order->child_orders + 1;
+            $order->child_orders_unpaid_total = $order->date_paid == null ? $order->child_orders_unpaid_total + $order->order_total : $order->child_orders_unpaid_total;
+            $order->child_orders_paid_total = $order->date_paid == null ? $order->child_orders_paid_total : $order->child_orders_paid_total + $order->order_total;
+            $order->total = $order->order_total + $order->child_orders_total;
+
 //            $order->product_total = $order->product_total + $order->product_net_revenue;
 //            dump($order->product_total);
         }
 
         return $orders;
-
     }
 
-    protected function getTripsTotals($orders): array
-    {
+    protected function getTripsTotals($orders): array {
 
 //        $totals = [
 //            [ "key" => "Valor de viagem",           "value" => 0.00, "color" => "text-primary" ],
@@ -532,11 +525,11 @@ class TripsController extends AbstractController
 //            $totals[2]["value"] += (float) $order->child_orders_unpaid_total;
 //        }
 
-        
+
         $totals = [
-            [ "key" => "Valor de produto",           "value" => 0.00, "color" => "text-primary" ],
-            [ "key" => "Valor pago de viagem",      "value" => 0.00, "color" => "text-success" ],
-            [ "key" => "Valor em falta de viagem",  "value" => 0.00, "color" => "text-danger" ],
+            ["key" => "Valor de produto", "value" => 0.00, "color" => "text-primary"],
+            ["key" => "Valor pago de viagem", "value" => 0.00, "color" => "text-success"],
+            ["key" => "Valor em falta de viagem", "value" => 0.00, "color" => "text-danger"],
 //            [ "key" => "Valor de viagem",           "value" => 0.00, "color" => "text-primary" ],
         ];
 
@@ -547,11 +540,9 @@ class TripsController extends AbstractController
             //$totals[1]["value"] += (float) $order->total;
         }
 
-        
-        
-        
+
+
+
         return $totals;
-
     }
-
 }
