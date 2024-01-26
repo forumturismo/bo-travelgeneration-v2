@@ -165,13 +165,28 @@
                                     <td class="text-end">{{ order.child_orders_paid_total|number_format(2, ',', '.') }}€</td>
 
 
-                                    <!-- valor do produto -->
+                                    
+                                    
+                                    {% if order.child_orders_paid_total|number_format(2, ',', '.') > order.product_net_revenue|number_format(2, ',', '.')  %}
+                                        {% if order.product_net_revenue|number_format(2, ',', '.') == order.child_orders_paid_total|number_format(2, ',', '.') %}
+                                            <td class="text-end text-success">{{ order.product_net_revenue|number_format(2, ',', '.') }}€</td>
+                                        {% else %}
+                                            <td class="text-end text-primary">{{ order.product_net_revenue|number_format(2, ',', '.') }}€</td>
+                                        {% endif %}
+                                    {% else %}
+                                        <td class="text-end text-danger ">{{ order.product_net_revenue|number_format(2, ',', '.') }}€</td>
+                                    {% endif %}
+
+
+                                    
+                                    
+{#                                    <!-- valor do produto -->
                                     {% if order.product_net_revenue|number_format(2, ',', '.') == order.child_orders_paid_total|number_format(2, ',', '.') %}
                                         <td class="text-end text-success">{{ order.product_net_revenue|number_format(2, ',', '.') }}€</td>
                                     {% else %}
 
                                         <td class="text-end text-danger ">{{ order.product_net_revenue|number_format(2, ',', '.') }}€</td>
-                                    {% endif %}
+                                    {% endif %}#}
 
 
 

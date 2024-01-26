@@ -21,22 +21,47 @@
 
 
 
-    {#    <div class="row mb-6">
-            {% for row in totals %}
-                <div class="col-md">
-                    <div class="card card-flush mb-4 mb-md-0">
-                        <div class="card-header p-5">
-                            <div class="card-title d-flex flex-column mb-0">
-                                <span class="fs-2hx fw-bold text-white me-2 mb-2 lh-1 ls-n2 {{ row.color }}">{{ row.value|number_format(2, ',', ' ') }}€</span>
-                                <span class="text-gray-600 pt-1 fw-semibold fs-6">{{ row.key }}</span>
-                                <span class="text-gray-400 fw-semibold fs-6">Valor de opcionais comprados em conjunto estão incluídos</span>
-                            </div>
-                        </div>
+    <div class="row mb-6">
+
+        <div class="col-md">
+            <div class="card card-flush mb-4 mb-md-0">
+                <div class="card-header p-5">
+                    <div class="card-title d-flex flex-column mb-0">
+                        <span class="fs-2hx fw-bold text-white me-2 mb-2 lh-1 ls-n2 text-primary "><div id="soma_totais">0€</div></span>
+                        <span class="text-gray-600 pt-1 fw-semibold fs-6">VALOR TOTAL</span>
+                        <span class="text-gray-400 fw-semibold fs-6">Somatório de todas as viagens.</span>
                     </div>
                 </div>
-            {% endfor %}
+            </div>
         </div>
-    #}    
+
+
+        <div class="col-md">
+            <div class="card card-flush mb-4 mb-md-0">
+                <div class="card-header p-5">
+                    <div class="card-title d-flex flex-column mb-0">
+                        <span class="fs-2hx fw-bold text-white me-2 mb-2 lh-1 ls-n2 text-success "><div id="soma_verdes">0€</div></span>
+                        <span class="text-gray-600 pt-1 fw-semibold fs-6">VALOR PAGO</span>
+                        <span class="text-gray-400 fw-semibold fs-6">Somatório de todos os pagamentos efetuados.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md">
+            <div class="card card-flush mb-4 mb-md-0">
+                <div class="card-header p-5">
+                    <div class="card-title d-flex flex-column mb-0">
+                        <span class="fs-2hx fw-bold text-white me-2 mb-2 lh-1 ls-n2 text-danger"><div id="soma_vermelhos">0€</div></span>
+                        <span class="text-gray-600 pt-1 fw-semibold fs-6">VALOR PENDENTE</span>
+                        <span class="text-gray-400 fw-semibold fs-6">Somatório de todos os pagamentos em falta.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
 
 
 
@@ -100,7 +125,18 @@
                             </tr>
                         </thead>
                         <tbody class="fw-bold text-gray-600">
+
+                            {% set soma_totais = 0 %}
+                            {% set soma_verdes = 0 %}
+                            {% set soma_vermelhos = 0 %}
                             {% for pagamento_offline in pagamento_offlines %}
+
+
+                                {% set soma_totais = soma_totais + pagamento_offline.precoVenda %}
+                                {% set soma_verdes = soma_verdes + pagamento_offline.valorPago %}
+                                {% set soma_vermelhos = soma_vermelhos + pagamento_offline.valorPendente %}
+
+
                                 <tr>
                                     <td>
                                         <div class="text-gray-800">{{ pagamento_offline.id }}</div>
@@ -160,7 +196,17 @@
                         {% endif %}
             #}        </div>
     </div>
+
+
+    <script>
+                    document.getElementById("soma_totais").innerHTML = '{{soma_totais|number_format(2, ',', '.')}}' + " €";
+                    document.getElementById("soma_vermelhos").innerHTML = '{{soma_vermelhos|number_format(2, ',', '.') }}' + " €";
+                    document.getElementById("soma_verdes").innerHTML = '{{soma_verdes|number_format(2, ',', '.') }}' + " €";
+    </script>
+
 {% endblock %}
 
 {% block javascripts %}
+
+
 {% endblock %}
