@@ -5,7 +5,7 @@
 {% block stylesheets %}
 {% endblock %}
 
-{% block pageHeading %}List Coupons{% endblock %}
+{% block pageHeading %}Lista de Cupões{% endblock %}
 
 {% block pageBreadcrumb %}
 {% endblock %}
@@ -87,45 +87,35 @@
                     <table class="table table-striped align-middle table-row-dashed fs-6 gy-3">
                         <thead>
                             <tr class="text-start text-gray-400 fw-bold fs-7 text-uppercase gs-0">
-                                <th class="min-w-100px">ID Cupão</th>
-                                <th class="min-w-100px">Name</th>
-                                <th class="text-end min-w-125px">Status</th>
-                                <th class="text-end min-w-125px">Type</th>
-                                <th class="text-end min-w-125px">Order</th>
-                                <th class="text-end min-w-100px">Discount Amount</th>
+                                <th class="min-w-100px">ID cupão</th>
+                                <th class="min-w-100px">Nome cupão</th>
+                                <th class="min-w-100px">Quantidade utilizada</th>
+                                <th class="min-w-100px">Valor cupão</th>
+                                <th class="min-w-100px">Total</th>
                             </tr>
                         </thead>
                         <tbody class="fw-bold text-gray-600">
                             {% for coupon in coupons %}
                                 <tr>
                                     <td>
-                                        <div class="text-gray-800">{{ coupon.id }}</div>
-                                        <div>{#{{ order.date_created|date("d/m/Y H:i") }}#}</div>
+                                        <div class="text-gray-800">{{ coupon.id_cupao }}</div>
                                     </td>
                                     <td>
-                                        <div class="text-capitalize text-success">{{ coupon.name}}</div>
+                                        <div class="text-capitalize text-success">{{ coupon.nome_cupao}}</div>
                                     </td>
-                                    <td class="text-end">
-                                        <div class="text-gray-800 text-capitalize">{{ coupon.status}}</div>
-                                        <div class="text-gray-600">{#{{ order.email }}#}</div>
+                                    <td>
+                                        <div class="text-gray-800 ">{{ coupon.quantidade_utilizada}}</div>
                                     </td>
-                                    <td class="text-end">
-                                        <span class="text-gray-800 text-capitalize">{{ coupon.type }}</span>
+                                    <td>
+                                        <span class="text-gray-800">{{ coupon.valor_cupao|number_format(2, ',', '.') }}€</span>
                                     </td>
-                                    <td class="text-end">
-                                        <span class="text-gray-800 text-capitalize">
-                                            {{ coupon.order_id }}
-                                        </span>
-                                    </td>
-<td class="text-end text-success">{{ coupon.discount_amount|number_format(2, ',', '.') }}€</td>
                                     
+                                    <td>
+                                        <span class="text-gray-800"> {{ (coupon.quantidade_utilizada * coupon.valor_cupao)|number_format(2, ',', '.') }}€</span>
+                                    </td>
 
                                 </tr>
                             {% endfor %}
-
-
-
-
 
 
 

@@ -213,7 +213,13 @@ class OptionalsController extends AbstractController {
         foreach ($rows as $row) {
             $columnLetter = 'A';
             foreach ($row as $value) {
-                $sheet->setCellValue($columnLetter . $line, $value);
+                
+                if($columnLetter == "E"):
+                    $sheet->setCellValue($columnLetter . $line, preg_replace('/\s+/', '', $value));
+                    else:
+                    $sheet->setCellValue($columnLetter . $line, $value);
+                endif;
+                
                 $columnLetter++;
             }
             $line++;

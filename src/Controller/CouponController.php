@@ -34,15 +34,22 @@ class CouponController extends AbstractController
     {
 
         
-        $sql = 'SELECT coupon_id as id,
-                post_title as name, 
-                post_status as status,
-                post_type as type,
-                order_id,
-                discount_amount
-                FROM travelgeneration.wp_posts 
-                join wp_wc_order_coupon_lookup on wp_posts.id = wp_wc_order_coupon_lookup.coupon_id';
+//        $sql = 'SELECT coupon_id as id,
+//                post_title as name, 
+//                post_status as status,
+//                post_type as type,
+//                order_id,
+//                discount_amount
+//                FROM travelgeneration.wp_posts 
+//                join wp_wc_order_coupon_lookup on wp_posts.id = wp_wc_order_coupon_lookup.coupon_id';
 
+        
+        $sql = 'select distinct (xpto.coupon_id) as id_cupao, wp_posts.post_title as nome_cupao, xpto.soma as quantidade_utilizada, wp_wc_order_coupon_lookup.discount_amount as valor_cupao from (select coupon_id, count(coupon_id) as soma from wp_wc_order_coupon_lookup group by coupon_id) as xpto 
+join travelgeneration.wp_posts on wp_posts.id = xpto.coupon_id
+inner join wp_wc_order_coupon_lookup on wp_wc_order_coupon_lookup.coupon_id = xpto.coupon_id';
+        
+        
+        
         $stmt = $this->conn->prepare($sql);
         $resultSet = $stmt->executeQuery();
         
