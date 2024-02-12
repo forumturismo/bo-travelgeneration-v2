@@ -153,10 +153,8 @@ class TripsController extends AbstractController {
             'Produto',
             'Total',
             'Estado',
-            
             'Metodo de Pagamento',
             'Nif',
-            
             "Data de nascimento",
             "Nacionalidade",
             "Documento (tipo)",
@@ -170,7 +168,6 @@ class TripsController extends AbstractController {
             "Contacto Opcional Emergência (Nome)",
             "Contacto Opcional Emergência (Email)",
             "Contacto Opcional Emergência (Telemóvel)",
-            
         ];
 
         $search = json_decode($request->get("json"));
@@ -193,10 +190,8 @@ class TripsController extends AbstractController {
                 "product" => $order->product_net_revenue,
                 "total" => $order->total,
                 "status" => $order->statusdesc["label"],
-                
                 "payment_method" => $order->payment_method,
                 "nif" => $order->nif ?? '',
-                                
                 "birthdate" => $order->birthdate ?? '',
                 "nationality" => $order->nationality ?? '',
                 "doc_type" => $order->doc_type ?? '',
@@ -210,7 +205,6 @@ class TripsController extends AbstractController {
                 "billing_emergency_optional_name" => $order->billing_emergency_optional_name ?? '',
                 "billing_emergency_optional_email" => $order->billing_emergency_optional_email ?? '',
                 "billing_emergency_optional_phone" => $order->billing_emergency_optional_phone ?? '',
-                
             ];
         }
 
@@ -239,14 +233,24 @@ class TripsController extends AbstractController {
             $columnLetter = 'A';
             foreach ($row as $value) {
 
-                if($columnLetter == "E"):
+
+
+
+
+                if ($columnLetter == "E"):
+                    if (str_starts_with($value, '351') ) {
+                        $value = substr($value, 3);
+                    }
+                    
+                    if (str_starts_with($value, '+351')) {
+                        $value = substr($value, 4);
+                    }
                     $sheet->setCellValue($columnLetter . $line, preg_replace('/\s+/', '', $value));
-                    else:
+
+                else:
                     $sheet->setCellValue($columnLetter . $line, $value);
                 endif;
-                
-                
-                
+
                 $columnLetter++;
             }
             $line++;
@@ -535,7 +539,7 @@ class TripsController extends AbstractController {
 
 
         $totals = [
-            ["key" => "VALOR TOTAL","desc" => "Somatório de todas as viagens (sem o valor dos opcionais)", "value" => 0.00, "color" => "text-primary"],
+            ["key" => "VALOR TOTAL", "desc" => "Somatório de todas as viagens (sem o valor dos opcionais)", "value" => 0.00, "color" => "text-primary"],
             ["key" => "VALOR PAGO", "desc" => "Somatório de todos os pagamentos efetuados (sem o valor dos opcionais).", "value" => 0.00, "color" => "text-success"],
             ["key" => "VALOR POR PAGAR", "desc" => "Somatório de todos os pagamentos em falta (sem o valor dos opcionais).", "value" => 0.00, "color" => "text-danger"],
 //            [ "key" => "Valor de viagem",           "value" => 0.00, "color" => "text-primary" ],
@@ -543,14 +547,13 @@ class TripsController extends AbstractController {
 
         foreach ($orders as $order) {
             $totals[0]["value"] += (float) $order->product_net_revenue;
-            
-            if((float) $order->child_orders_paid_total > (float) $order->product_net_revenue):
+
+            if ((float) $order->child_orders_paid_total > (float) $order->product_net_revenue):
                 $totals[1]["value"] += (float) $order->product_net_revenue;
             else:
                 $totals[1]["value"] += (float) $order->child_orders_paid_total;
             endif;
-            
-            
+
             $totals[2]["value"] += (float) $order->child_orders_unpaid_total;
             //$totals[1]["value"] += (float) $order->total;
         }

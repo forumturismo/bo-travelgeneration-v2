@@ -271,16 +271,29 @@
         $(function () {
             $("#btn_reset").click(function () {
 
-                $("#frm")[0].reset();
+
+$('#form_product').val($('#form_product option:first-child').val()).trigger('change');
+$('#form_school').val($('#form_school option:first-child').val()).trigger('change');
+$('#form_status').val($('#form_status option:first-child').val()).trigger('change');
+
+$('#form_product').select2().trigger('change');
+$('#form_product option').removeAttr('selected');
+
+$('#form_school').select2().trigger('change');
+$('#form_school option').removeAttr('selected');
+
+$('#form_status').select2().trigger('change');
+$('#form_status option').removeAttr('selected');
+
+
+
+
+
+{#                $("#frm")[0].reset();
                 $("#form_product").trigger("change");
                 $("#form_school").trigger("change");
                 $("#form_status").trigger("change");
-
-{#                $("#frm")[0].reset();
-                $("#form_school").trigger("change");
-
-                $("#frm")[0].reset();
-                $("#form_status").trigger("change");#}
+#}
             });
         });
 
