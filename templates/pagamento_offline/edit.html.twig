@@ -26,6 +26,11 @@
             <div class="card card-flush">
                 <div class="card-header pt-7">
 
+               <div class="my-custom-class-for-errors">
+        {{ form_errors(form) }}
+    </div>
+                    
+                    
                     {{ include('pagamento_offline/_form.html.twig', {'button_label': 'Update'}) }}
                     
                     <a class="btn btn-info" href="{{ path('app_pagamento_offline_index') }}">back to list</a>

@@ -19,7 +19,7 @@ class PagamentoOffline
     private $id;
 
     /**
-     * @ORM\Column(name="num_file", type="decimal", precision=5, scale=2, nullable=true)
+     * @ORM\Column(name="num_file", type="string", length=255)
      */
     private $numFile;
 
