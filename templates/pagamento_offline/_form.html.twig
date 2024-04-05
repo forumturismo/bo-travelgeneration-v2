@@ -4,37 +4,41 @@
 {{ form_start(form) }}
 <div class="row">
     <div class="col-md-6">
+
+        <div class="form-group">
+            {{ form_label(form.data) }}:
+            {{ form_widget(form.data, {'attr': {'class': 'form-control form-control-solid '}}) }}
+            <span class="text-danger">  {{ form_errors(form.data) }}</span>
+        </div>
+
         <div class="form-group">
             {{ form_label(form.numFile) }}:
             {{ form_widget(form.numFile, {'attr': {'class': 'form-control form-control-solid '}}) }}
             <span class="text-danger">  {{ form_errors(form.numFile) }}</span>
-
         </div>
 
         <div class="form-group">
             {{ form_label(form.cliente) }}:
             {{ form_widget(form.cliente, {'attr': {'class': 'form-control form-control-solid '}})  }}
-
             <span class="text-danger">      {{ form_errors(form.cliente) }}</span>
-
-        </div>
-
-        <div class="form-group">
-            {{ form_label(form.destino) }}:
-            {{ form_widget(form.destino, {'attr': {'class': 'form-control form-control-solid '}})  }}
-
-            <span class="text-danger">     {{ form_errors(form.destino) }}</span>
-
         </div>
 
 
         <div class="form-group">
             {{ form_label(form.comercial) }}:
             {{ form_widget(form.comercial, {'attr': {'class': 'form-control form-control-solid '}})  }}
-
             <span class="text-danger">    {{ form_errors(form.comercial) }}</span>
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.servico) }}:
+            {{ form_widget(form.servico, {'attr': {'class': 'form-control form-control-solid '}})  }}
+
+            <span class="text-danger">     {{ form_errors(form.servico) }}</span>
 
         </div>
+
+
     </div>
 
 
@@ -42,11 +46,26 @@
         <div class="form-group">
             {{ form_label(form.precoVenda) }}:
             {{ form_widget(form.precoVenda, {'attr': {'class': 'form-control form-control-solid '}})  }}
-
             <span class="text-danger">    {{ form_errors(form.precoVenda) }} </span>
         </div>
 
 
+        <div class="form-group">
+            {{ form_label(form.precoCusto) }}:
+            {{ form_widget(form.precoCusto, {'attr': {'class': 'form-control form-control-solid '}})  }}
+            <span class="text-danger">    {{ form_errors(form.precoCusto) }} </span>
+        </div>
+
+        
+        
+        <div class="form-group">
+            {{ form_label(form.comissao) }}:
+            {{ form_widget(form.comissao, {'attr': {'class': 'form-control form-control-solid '}})  }}
+            <span class="text-danger">    {{ form_errors(form.comissao) }} </span>
+        </div>
+
+        
+        
         <div class="form-group">
             {{ form_label(form.valorPago) }}:
             {{ form_widget(form.valorPago, {'attr': {'class': 'form-control form-control-solid '}})  }}
@@ -54,11 +73,11 @@
         </div>
 
 
-        <div class="form-group">
+{#        <div class="form-group">
             {{ form_label(form.valorPendente) }}:
             {{ form_widget(form.valorPendente, {'attr': {'class': 'form-control form-control-solid '}})  }}
             <span class="text-danger">    {{ form_errors(form.valorPendente) }}</span>
-        </div>
+        </div>#}
 
 
         <div class="form-group">

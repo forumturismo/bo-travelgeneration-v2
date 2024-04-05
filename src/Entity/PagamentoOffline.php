@@ -18,6 +18,16 @@ class PagamentoOffline
      */
     private $id;
 
+    
+        
+    /**
+     * @ORM\Column(name="data", type="date")
+     */
+    private $data;
+
+    
+    
+    
     /**
      * @ORM\Column(name="num_file", type="string", length=255)
      */
@@ -28,36 +38,59 @@ class PagamentoOffline
      */
     private $cliente;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $destino;
-
+    
     /**
      * @ORM\Column(type="string", length=255)
      */
     private $comercial;
 
+    
+    
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $servico;
+
+    
     /**
      * @ORM\Column(name="preco_venda", type="decimal", precision=10, scale=2)
      */
     private $precoVenda;
 
+    
+        /**
+     * @ORM\Column(name="preco_custo", type="decimal", precision=10, scale=2)
+     */
+    private $precoCusto;
+
+    
+    /**
+     * @ORM\Column(name="comissao", type="decimal", precision=10, scale=0)
+     */
+    private $comissao;
+
+    
+    
+    
     /**
      * @ORM\Column(name="valor_pago", type="decimal", precision=10, scale=2)
      */
     private $valorPago;
 
-    /**
-     * @ORM\Column(name="valor_pendente", type="decimal", precision=10, scale=2)
-     */
-    private $valorPendente;
+//    /**
+//     * @ORM\Column(name="valor_pendente", type="decimal", precision=10, scale=2)
+//     */
+//    private $valorPendente;
 
     /**
      * @ORM\Column(name="metodo_pagamento", type="string", length=255)
      */
     private $metodoPagamento;
 
+    
+    
+    
+    
     public function getId(): ?int
     {
         return $this->id;
@@ -135,17 +168,17 @@ class PagamentoOffline
         return $this;
     }
 
-    public function getValorPendente(): ?string
-    {
-        return $this->valorPendente;
-    }
-
-    public function setValorPendente(string $valorPendente): self
-    {
-        $this->valorPendente = $valorPendente;
-
-        return $this;
-    }
+//    public function getValorPendente(): ?string
+//    {
+//        return $this->valorPendente;
+//    }
+//
+//    public function setValorPendente(string $valorPendente): self
+//    {
+//        $this->valorPendente = $valorPendente;
+//
+//        return $this;
+//    }
 
     public function getMetodoPagamento(): ?string
     {
@@ -158,4 +191,43 @@ class PagamentoOffline
 
         return $this;
     }
+    
+    
+    public function getData() {
+        return $this->data;
+    }
+
+    public function getServico() {
+        return $this->servico;
+    }
+
+    public function getPrecoCusto() {
+        return $this->precoCusto;
+    }
+
+    public function getComissao() {
+        return $this->comissao;
+    }
+
+    public function setData($data): void {
+        $this->data = $data;
+    }
+
+    public function setServico($servico): void {
+        $this->servico = $servico;
+    }
+
+    public function setPrecoCusto($precoCusto): void {
+        $this->precoCusto = $precoCusto;
+    }
+
+    public function setComissao($comissao): void {
+        $this->comissao = $comissao;
+    }
+
+
+    
+    
+    
+    
 }

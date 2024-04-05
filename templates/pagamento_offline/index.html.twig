@@ -112,12 +112,17 @@
                     <table class="table table-striped align-middle table-row-dashed fs-6 gy-3">
                         <thead>
                             <tr class="text-start text-gray-400 fw-bold fs-7 text-uppercase gs-0">
-                                <th class="min-w-100px">ID Pagamento</th>
+                                {#<th class="min-w-100px">ID Pagamento</th>#}
+                                <th class="min-w-100px">Data</th>
                                 <th class="min-w-100px">Num File</th>
                                 <th class="text-end min-w-125px">Cliente</th>
-                                <th class="text-end min-w-125px">Destino</th>
                                 <th class="text-end min-w-125px">Comercial</th>
+                                <th class="text-end min-w-125px">Serviço</th>
                                 <th class="text-end min-w-100px">Preço Venda</th>
+                                <th class="text-end min-w-100px">Preço Custo</th>
+                                <th class="text-end min-w-100px">Margem Bruta</th>
+                                <th class="text-end min-w-100px">Comissão</th>
+                                <th class="text-end min-w-100px">Comissão em valor</th>
                                 <th class="text-end min-w-100px">Valor Pago</th>
                                 <th class="text-end min-w-100px">Valor Pendente</th>
                                 <th class="text-end min-w-100px">Metodo Pagamento</th>
@@ -129,37 +134,57 @@
                             {% set soma_totais = 0 %}
                             {% set soma_verdes = 0 %}
                             {% set soma_vermelhos = 0 %}
+                            {% set valor_pendente = 0 %}
                             {% for pagamento_offline in pagamento_offlines %}
 
 
                                 {% set soma_totais = soma_totais + pagamento_offline.precoVenda %}
                                 {% set soma_verdes = soma_verdes + pagamento_offline.valorPago %}
-                                {% set soma_vermelhos = soma_vermelhos + pagamento_offline.valorPendente %}
+                                {% set soma_vermelhos = soma_vermelhos + valor_pendente %}
 
 
                                 <tr>
                                     <td>
-                                        <div class="text-gray-800">{{ pagamento_offline.id }}</div>
-                                        <div>{#{{ order.date_created|date("d/m/Y H:i") }}#}</div>
+                                        <div class="text-gray-800">{{ pagamento_offline.data|date("m/d/Y") }}</div>
                                     </td>
                                     <td>
                                         <div class="text-capitalize text-success">{{ pagamento_offline.numFile }}</div>
                                     </td>
                                     <td class="text-end">
                                         <div class="text-gray-800 text-capitalize">{{ pagamento_offline.cliente }}</div>
-                                        <div class="text-gray-600">{#{{ order.email }}#}</div>
+                                       
                                     </td>
-                                    <td class="text-end">
-                                        <span class="text-gray-800 text-capitalize">{{ pagamento_offline.destino }}</span>
+                                     <td class="text-end">
+                                        <span class="text-gray-800 text-capitalize">{{ pagamento_offline.comercial}}</span>
                                     </td>
-                                    <td class="text-end">
-                                        <span class="text-gray-800 text-capitalize">
-                                            {{ pagamento_offline.comercial }}
-                                        </span>
+                                    
+                                     <td class="text-end">
+                                        <span class="text-gray-800 text-capitalize">{{ pagamento_offline.servico}}</span>
                                     </td>
+                                    
+                               
                                     <td class="text-end">{{ pagamento_offline.precoVenda|number_format(2, ',', '.') }}€</td>
+                               
+                                    <td class="text-end">{{ pagamento_offline.precoCusto|number_format(2, ',', '.') }}€</td>
+                               
+                                    <!-- margem  bruta -->
+                                    {% set margem_bruta = pagamento_offline.precoVenda - pagamento_offline.precoCusto %}
+                                    <td class="text-end">{{ margem_bruta|number_format(2, ',', '.') }}€</td>
+                               
+                                     <td class="text-end">
+                                        <span class="text-gray-800 text-capitalize">{{ pagamento_offline.comissao}}%</span>
+                                    </td>
+                                    
+                                    <!-- comissao em valor -->
+                                    {% set comissao_valor = margem_bruta * (pagamento_offline.comissao / 100) %}
+                                    <td class="text-end">{{ comissao_valor|number_format(2, ',', '.') }}€</td>
+                               
+                                    
                                     <td class="text-end">{{ pagamento_offline.valorPago|number_format(2, ',', '.') }}€</td>
-                                    <td class="text-end">{{ pagamento_offline.valorPendente|number_format(2, ',', '.') }}€</td>
+                                    
+                                    {% set valor_pendente = pagamento_offline.precoVenda - pagamento_offline.valorPago %}
+                                    <td class="text-end">{{ valor_pendente|number_format(2, ',', '.') }}€</td>
+                                    
                                     <td class="text-success text-end">
                                         {{ pagamento_offline.metodoPagamento }}
                                     </td>
