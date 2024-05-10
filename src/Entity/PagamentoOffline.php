@@ -227,7 +227,25 @@ class PagamentoOffline
 
 
     
+        public function getMargemBruta() {
+        
+            return $this->getPrecoVenda() - $this->getPrecoCusto();
+            
+    }
     
+            public function getComissaoValor() {
+        
+            return $this->getMargemBruta() * ($this->getComissao() / 100);
+                
+            
+    }
     
+           public function getValorPendente() {
+        
+            return $this->getPrecoVenda() - $this->getValorPago();
+                
+            
+    }
     
+  
 }
