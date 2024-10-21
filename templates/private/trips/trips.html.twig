@@ -40,6 +40,10 @@
                     <h3 class="card-title align-items-start flex-column">
                         <span class="card-label fw-bold text-gray-800">Viagens</span>
                     </h3>
+                    
+                    <h2 class="card-title align-items-start flex-column">
+                        <span class="card-label fw-bold text-gray-800"></span>
+                    </h2>
                     <div class="card-toolbar">
                         {{ form_start(form, { attr: { id: "frm"}} ) }}
 
@@ -205,10 +209,25 @@
                                     </td>
                                 </tr>
                             {% endfor %}
+                            
+                         
+                           
+                            
                         </tbody>
                     </table>
                 </div>
+                            
+                                              {% if orders is empty %}
+                                                  
+                                                  </br></br>
+                                                  <h3><center>Clique em <span class="bi-search"></span>&nbsp;filtrar para obter viagens!</center></h3></br></br>
+{% endif %}
+                            
+                            
             </div>
+                            
+          
+                            
             {% if number_of_pages >= 1 %}
                 <ul class="pagination pagination-outline justify-content-end mt-6">
                     {% for page in range(1, number_of_pages) %}

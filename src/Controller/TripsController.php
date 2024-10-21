@@ -40,6 +40,14 @@ class TripsController extends AbstractController {
     public function pageTrips(Request $request, int $page = 1): Response {
         $session = $request->getSession();
 
+        
+        
+        $orders = [];
+        $search = "";
+        $number_of_pages = 0;
+        $totals = 0;
+        
+        
         $product = $session->get('product') ?? 0;
         //$product        = $session->get('product') ?? 0;
         $slug = $session->get('slug');
@@ -54,7 +62,7 @@ class TripsController extends AbstractController {
         $form = $this->createFormBuilder($formStatusFilter)
                 ->add('product', ChoiceType::class, [
                     'label' => "Filtrar por viagem",
-                    'placeholder' => 'Todos as viagens',
+                    'placeholder' => 'Todas as viagens',
                     'choices' => $this->information->getProducts(),
                     'required' => false,
                     'choice_value' => 'value',
@@ -101,9 +109,10 @@ class TripsController extends AbstractController {
             $session->set('slug', $slug);
             $session->set('school', $school);
             $session->set('search', $search_value);
-        }
-
-        $search = $school ? ' AND EXISTS (
+       
+            // change start
+            
+                    $search = $school ? ' AND EXISTS (
 		    SELECT wc_usermetadata.meta_value FROM travelgeneration.wp_usermeta as wc_usermetadata WHERE wc_usermetadata.user_id = wc_customer.user_id AND wc_usermetadata.meta_value = "' . $school . '"
         )' : '';
 
@@ -121,6 +130,11 @@ class TripsController extends AbstractController {
         $orders = $this->getTripsData($search, $product, $page_first_result, $results_per_page);
 
         $totals = $this->getTripsTotals($this->getTripsData($search, $product));
+
+            
+            
+        }
+
 
         return $this->render('private/trips/trips.html.twig', [
                     'form' => $form->createView(),

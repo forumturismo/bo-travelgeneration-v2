@@ -131,6 +131,8 @@ and product.product_id not in(SELECT wp_posts.ID FROM wp_posts WHERE post_status
 
         $products = json_decode(json_encode($resultSet->fetchAllAssociative()));
         $products_out = [];
+        
+        //$products_out[] = (object) ['value' => -1, 'trip' => 'Selecione uma viagem'];
 
         foreach ($products as $product) {
             $products_out[] = (object) ['value' => $product->product_id, 'trip' => $product->post_title];
