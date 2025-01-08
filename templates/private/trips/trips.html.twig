@@ -3,6 +3,9 @@
 {% block title %}Viagens{% endblock %}
 
 {% block stylesheets %}
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/2.2.0/css/dataTables.dataTables.css">
+
 {% endblock %}
 
 {% block pageHeading %}Visão das viagens{% endblock %}
@@ -40,7 +43,7 @@
                     <h3 class="card-title align-items-start flex-column">
                         <span class="card-label fw-bold text-gray-800">Viagens</span>
                     </h3>
-                    
+
                     <h2 class="card-title align-items-start flex-column">
                         <span class="card-label fw-bold text-gray-800"></span>
                     </h2>
@@ -87,7 +90,7 @@
                                     <path d="M19.0759 3H4.72777C3.95892 3 3.47768 3.83148 3.86067 4.49814L8.56967 12.6949C9.17923 13.7559 9.5 14.9582 9.5 16.1819V19.5072C9.5 20.2189 10.2223 20.7028 10.8805 20.432L13.8805 19.1977C14.2553 19.0435 14.5 18.6783 14.5 18.273V13.8372C14.5 12.8089 14.8171 11.8056 15.408 10.964L19.8943 4.57465C20.3596 3.912 19.8856 3 19.0759 3Z" fill="currentColor" />
                                     </svg>
                                 </span>#}
-                                
+
                                 <span class="bi-trash"></span> &nbsp;
                                 Limpar
                             </button>
@@ -99,7 +102,7 @@
                     </div>
                 </div>
                 <div class="card-body pt-2 pb-0">
-                    <table class="table align-middle table-row-dashed fs-6 gy-3">
+                    <table id="trips" class="display table align-middle table-row-dashed fs-6 gy-3" style="width:100%">
                         <thead>
                             <tr class="text-start text-gray-400 fw-bold fs-7 text-uppercase gs-0">
                                 <th class="min-w-100px">ID Viagem</th>
@@ -169,8 +172,8 @@
                                     <td class="text-end">{{ order.child_orders_paid_total|number_format(2, ',', '.') }}€</td>
 
 
-                                    
-                                    
+
+
                                     {% if order.child_orders_paid_total|number_format(2, ',', '.') > order.product_net_revenue|number_format(2, ',', '.')  %}
                                         {% if order.product_net_revenue|number_format(2, ',', '.') == order.child_orders_paid_total|number_format(2, ',', '.') %}
                                             <td class="text-end text-success">{{ order.product_net_revenue|number_format(2, ',', '.') }}€</td>
@@ -182,15 +185,15 @@
                                     {% endif %}
 
 
-                                    
-                                    
-{#                                    <!-- valor do produto -->
-                                    {% if order.product_net_revenue|number_format(2, ',', '.') == order.child_orders_paid_total|number_format(2, ',', '.') %}
-                                        <td class="text-end text-success">{{ order.product_net_revenue|number_format(2, ',', '.') }}€</td>
-                                    {% else %}
 
-                                        <td class="text-end text-danger ">{{ order.product_net_revenue|number_format(2, ',', '.') }}€</td>
-                                    {% endif %}#}
+
+                                    {#                                    <!-- valor do produto -->
+                                                                        {% if order.product_net_revenue|number_format(2, ',', '.') == order.child_orders_paid_total|number_format(2, ',', '.') %}
+                                                                            <td class="text-end text-success">{{ order.product_net_revenue|number_format(2, ',', '.') }}€</td>
+                                                                        {% else %}
+                                    
+                                                                            <td class="text-end text-danger ">{{ order.product_net_revenue|number_format(2, ',', '.') }}€</td>
+                                                                        {% endif %}#}
 
 
 
@@ -209,74 +212,77 @@
                                     </td>
                                 </tr>
                             {% endfor %}
-                            
-                         
-                           
-                            
+
+
+
+
                         </tbody>
                     </table>
                 </div>
-                            
-                                              {% if orders is empty %}
-                                                  
-                                                  </br></br>
-                                                  <h3><center>Clique em <span class="bi-search"></span>&nbsp;filtrar para obter viagens!</center></h3></br></br>
-{% endif %}
-                            
-                            
+
+                {% if orders is empty %}
+
+                    </br></br>
+                    <h3><center>Clique em <span class="bi-search"></span>&nbsp;filtrar para obter viagens!</center></h3></br></br>
+                        {% endif %}
+
+
             </div>
-                            
-          
-                            
-            {% if number_of_pages >= 1 %}
-                <ul class="pagination pagination-outline justify-content-end mt-6">
-                    {% for page in range(1, number_of_pages) %}
-                        <li class="page-item {% if current_page == page %}active{% endif %}">
-                            <a class="page-link" {% if current_page != page %}
-                               href="{{ path("page_trips", { page }) }}"{% endif %}>
-                                {{ page }}
-                            </a>
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
+
+            {#          {{ search }}
+                                        
+                        {% if number_of_pages >= 1 %}
+                            <ul class="pagination pagination-outline justify-content-end mt-6">
+                                {% for page in range(1, number_of_pages) %}
+                                    <li class="page-item {% if current_page == page %}active{% endif %}">
+                                        <a class="page-link" {% if current_page != page %}
+                                           href="{{ path("page_trips", { page }) }}"{% endif %}>
+                                            {{ page }}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}#}
         </div>
     </div>
 {% endblock %}
 
 {% block javascripts %}
-    <script>
 
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/2.2.0/js/dataTables.js" ></script>
+   
+    <script>
 
         $(function () {
             $("#btn_reset").click(function () {
 
+                $('#form_product').val($('#form_product option:first-child').val()).trigger('change');
+                $('#form_school').val($('#form_school option:first-child').val()).trigger('change');
+                $('#form_status').val($('#form_status option:first-child').val()).trigger('change');
 
+                $('#form_product').select2().trigger('change');
+                $('#form_product option').removeAttr('selected');
 
-$('#form_product').val($('#form_product option:first-child').val()).trigger('change');
-$('#form_school').val($('#form_school option:first-child').val()).trigger('change');
-$('#form_status').val($('#form_status option:first-child').val()).trigger('change');
+                $('#form_school').select2().trigger('change');
+                $('#form_school option').removeAttr('selected');
 
-$('#form_product').select2().trigger('change');
-$('#form_product option').removeAttr('selected');
+                $('#form_status').select2().trigger('change');
+                $('#form_status option').removeAttr('selected');
 
-$('#form_school').select2().trigger('change');
-$('#form_school option').removeAttr('selected');
-
-$('#form_status').select2().trigger('change');
-$('#form_status option').removeAttr('selected');
-
-
-
-{#                $("#frm")[0].reset();
-                $("#form_product").trigger("change");
-                $("#form_school").trigger("change");
-                $("#form_status").trigger("change");
-#}
             });
         });
 
-
+        new DataTable('#trips', {
+    language: {
+        info: 'Mostrando página _PAGE_ de _PAGES_',
+        infoEmpty: 'Nenhum registo disponível',
+        infoFiltered: '(filtrado do total de _MAX_ registos)',
+        lengthMenu: 'Exibir _MENU_ registos por página',
+        zeroRecords: 'Nada encontrado - desculpe',
+        search: 'Pesquisar'
+  }
+});
 
     </script>
 
