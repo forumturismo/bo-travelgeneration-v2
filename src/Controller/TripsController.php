@@ -54,7 +54,8 @@ class TripsController extends AbstractController {
         $school = $session->get('school');
         $search_value = $session->get('search');
 
-        $results_per_page = 50;
+        //$results_per_page = 50;
+        $results_per_page = 50000; //já não é utilizado
         $page_first_result = ($page - 1) * $results_per_page;
 
         $formStatusFilter = new OrdersSearch();
