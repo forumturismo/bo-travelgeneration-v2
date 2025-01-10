@@ -99,7 +99,7 @@ class TripsController extends AbstractController {
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() ) {
             $page = 1;
             $page_first_result = 0;
             $product = $form->get("product")->getData() ? $form->get("product")->getData()->value : '0';
