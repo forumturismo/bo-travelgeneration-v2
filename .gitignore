@@ -13,4 +13,7 @@
 .phpunit.result.cache
 /phpunit.xml
 ###< symfony/phpunit-bridge ###
+public/assets/pagamentos_offline.xlsx
+
+
 

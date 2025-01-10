@@ -1,5 +1,10 @@
 {% extends 'base.html.twig' %}
 
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
 {% block title %}Login{% endblock %}
 
 {% block body %}
@@ -38,4 +43,8 @@
         </div>
     </div>
 
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
 {% endblock %}

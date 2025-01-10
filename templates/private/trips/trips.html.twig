@@ -3,9 +3,8 @@
 {% block title %}Viagens{% endblock %}
 
 {% block stylesheets %}
-
+    {{ parent() }}
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/2.2.0/css/dataTables.dataTables.css">
-
 {% endblock %}
 
 {% block pageHeading %}Visão das viagens{% endblock %}
@@ -251,7 +250,10 @@
 
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/2.2.0/js/dataTables.js" ></script>
-   
+
+    {{ parent() }}
+
+
     <script>
 
         $(function () {
@@ -273,16 +275,20 @@
             });
         });
 
+
+
+
         new DataTable('#trips', {
-    language: {
-        info: 'Mostrando página _PAGE_ de _PAGES_',
-        infoEmpty: 'Nenhum registo disponível',
-        infoFiltered: '(filtrado do total de _MAX_ registos)',
-        lengthMenu: 'Exibir _MENU_ registos por página',
-        zeroRecords: 'Nada encontrado - desculpe',
-        search: 'Pesquisar'
-  }
-});
+            order: [[0, 'desc']],
+            language: {
+                info: 'Mostrando página _PAGE_ de _PAGES_',
+                infoEmpty: 'Nenhum registo disponível',
+                infoFiltered: '(filtrado do total de _MAX_ registos)',
+                lengthMenu: 'Exibir _MENU_ registos por página',
+                zeroRecords: 'Nada encontrado - desculpe',
+                search: 'Pesquisar'
+            }
+        });
 
     </script>
 

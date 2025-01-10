@@ -5,13 +5,16 @@
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>{% block title %}Welcome!{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+
+        <!--end::Global Stylesheets Bundle-->
+        {% block stylesheets %}
+            
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
         <!--begin::Global Stylesheets Bundle(used by all pages)-->
         <link href="{{ asset('assets/theme/plugins/global/plugins.bundle.css') }}" rel="stylesheet" type="text/css" />
         <link href="{{ asset('assets/theme/css/style.bundle.css') }}" rel="stylesheet" type="text/css" />
         <link href="{{ asset('assets/custom/css/style.css') }}" rel="stylesheet" type="text/css" />
-        <!--end::Global Stylesheets Bundle-->
-        {% block stylesheets %}
+            
         {% endblock %}
         
         
@@ -222,8 +225,12 @@
             </div>
         </div>
 
-        <script src="{{ asset('assets/theme/plugins/global/plugins.bundle.js') }}"></script>
+
+        {% block javascripts %}
+        
+                <script src="{{ asset('assets/theme/plugins/global/plugins.bundle.js') }}"></script>
         <script src="{{ asset('assets/theme/js/scripts.bundle.js') }}"></script>
-        {% block javascripts %}{% endblock %}
+        
+        {% endblock %}
     </body>
 </html>
