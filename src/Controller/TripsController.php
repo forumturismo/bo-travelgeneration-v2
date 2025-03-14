@@ -119,7 +119,7 @@ class TripsController extends AbstractController {
 
         $search .= $slug ? ' AND wc_order.status = "' . $slug . '"' : '';
 
-        $search .= $search_value ? ' AND (wc_order.order_id LIKE "%' . $search_value . '%"
+        $search .= $search_value ? ' AND (wc_order.id LIKE "%' . $search_value . '%"
         OR EXISTS (
             SELECT wc_user_data.meta_value FROM travelgeneration.wp_usermeta as wc_user_data WHERE wc_user_data.user_id = wc_customer.user_id
             AND ((wc_user_data.meta_key = "last_name" AND wc_user_data.meta_value LIKE "%' . $search_value . '%") OR (wc_user_data.meta_key = "first_name" AND wc_user_data.meta_value LIKE "%' . $search_value . '%") OR (wc_user_data.meta_key = "billing_email" AND wc_user_data.meta_value LIKE "%' . $search_value . '%"))
@@ -282,22 +282,22 @@ class TripsController extends AbstractController {
     protected function getTripsCount($search, $product): int {
 
         $sql = 'SELECT count(*) as total
-                FROM travelgeneration.wp_wc_order_stats AS wc_order
-                
+                #FROM travelgeneration.wp_wc_order_stats AS wc_order
+                FROM travelgeneration.wp_wc_orders AS wc_order
                 INNER JOIN travelgeneration.wp_wc_customer_lookup AS wc_customer ON wc_order.customer_id = wc_customer.customer_id
-                INNER JOIN travelgeneration.wp_woocommerce_order_items AS wc_item ON wc_order.order_id = wc_item.order_id ';
+                INNER JOIN travelgeneration.wp_woocommerce_order_items AS wc_item ON wc_order.id = wc_item.order_id ';
 
         if ($product != 0):
             $sql = $sql . ' INNER JOIN travelgeneration.wp_woocommerce_order_itemmeta AS wc_item_data ON wc_item.order_item_id = wc_item_data.order_item_id ';
         endif;
 
-        $sql = $sql . ' WHERE wc_order.parent_id = 0 AND wc_order.status <> "wc-trash" ';
+        $sql = $sql . ' WHERE wc_order.parent_order_id = 0 AND wc_order.status <> "wc-trash" ';
 
         if ($product != 0):
             $sql = $sql . ' AND wc_item_data.meta_value = ' . $product . ' ';
         endif;
 
-        $sql = $sql . ' ' . $search . ' ORDER BY wc_order.order_id DESC';
+        $sql = $sql . ' ' . $search . ' ORDER BY wc_order.id DESC';
 
         $stmt = $this->conn->prepare($sql);
         $resultSet = $stmt->executeQuery();
@@ -324,7 +324,7 @@ class TripsController extends AbstractController {
             
             
             FROM (
-                SELECT wc_order.order_id, wc_order.date_created, wc_order.status, wc_order.net_total as order_total,
+                SELECT wc_order.id as order_id, wc_order.date_created_gmt as date_created, wc_order.status, wc_order.total_amount as order_total,
             
                         (select json_arrayagg(json_object( "key", wc_usermeta.meta_key, "value", wc_usermeta.meta_value ))
                             FROM travelgeneration.wp_usermeta AS wc_usermeta
@@ -354,20 +354,20 @@ class TripsController extends AbstractController {
                         
                         (select count(*)
                         FROM travelgeneration.wp_wc_order_stats AS child_orders
-                        WHERE child_orders.parent_id = wc_order.order_id 
+                        WHERE child_orders.parent_id = wc_order.id 
                         AND wc_order.status <> "wc-trash"
                         #LM - BEGIN
-                        AND wc_order.order_id not in(SELECT wp_posts.ID FROM wp_posts WHERE post_status like "%trash%" and post_type = "shop_order")
+                        AND wc_order.id not in(SELECT wp_posts.ID FROM wp_posts WHERE post_status like "%trash%" and post_type = "shop_order")
                         #LM - END
                         ) AS child_orders,
                         
                         #Retorna o valor total dos parcelamentos da encomenda
                         (select IFNULL(sum(child_order.net_total), 0)
                         FROM travelgeneration.wp_wc_order_stats AS child_order
-                        WHERE child_order.parent_id = wc_order.order_id
+                        WHERE child_order.parent_id = wc_order.id
                         AND wc_order.status <> "wc-trash"
                         #LM - BEGIN
-                        AND wc_order.order_id not in(SELECT wp_posts.ID FROM wp_posts WHERE post_status like "%trash%" and post_type = "shop_order")
+                        AND wc_order.id not in(SELECT wp_posts.ID FROM wp_posts WHERE post_status like "%trash%" and post_type = "shop_order")
                         #LM - END
                         ) AS child_orders_total,
 
@@ -376,10 +376,10 @@ class TripsController extends AbstractController {
                         (select count(*) 
                         FROM travelgeneration.wp_wc_order_stats AS child_order 
                         INNER JOIN travelgeneration.wp_postmeta AS child_order_postmeta ON child_order.order_id = child_order_postmeta.post_id AND child_order_postmeta.meta_key = "_paid_date"
-                        WHERE child_order.parent_id = wc_order.order_id
+                        WHERE child_order.parent_id = wc_order.id
                         AND wc_order.status <> "wc-trash"
                         #LM - BEGIN
-                        AND wc_order.order_id not in(SELECT wp_posts.ID FROM wp_posts WHERE post_status like "%trash%" and post_type = "shop_order")
+                        AND wc_order.id not in(SELECT wp_posts.ID FROM wp_posts WHERE post_status like "%trash%" and post_type = "shop_order")
                         #LM - END                        
                         ) AS child_orders_paid,
                         
@@ -388,10 +388,10 @@ class TripsController extends AbstractController {
                         (select IFNULL(sum(child_order.net_total), 0)
                         FROM travelgeneration.wp_wc_order_stats AS child_order 
                         INNER JOIN travelgeneration.wp_postmeta AS child_order_postmeta ON child_order.order_id = child_order_postmeta.post_id AND child_order_postmeta.meta_key = "_paid_date"
-                        WHERE child_order.parent_id = wc_order.order_id
+                        WHERE child_order.parent_id = wc_order.id
                         AND wc_order.status <> "wc-trash"
                         #LM - BEGIN
-                        AND wc_order.order_id not in(SELECT wp_posts.ID FROM wp_posts WHERE post_status like "%trash%" and post_type = "shop_order")
+                        AND wc_order.id not in(SELECT wp_posts.ID FROM wp_posts WHERE post_status like "%trash%" and post_type = "shop_order")
                         #LM - END
                         ) AS child_orders_paid_total,
 
@@ -403,17 +403,17 @@ class TripsController extends AbstractController {
             $sql = $sql . ' AND wp_wc_order_product_lookup.product_id = ' . $product;
         endif;
 
-        $sql = $sql . ' where (child_order.order_id = wc_order.order_id OR child_order.parent_id = wc_order.order_id) and variation_id = 0
+        $sql = $sql . ' where (child_order.order_id = wc_order.id OR child_order.parent_id = wc_order.id) and variation_id = 0
                         ) AS product_net_revenue,
 
                         (SELECT wp_postmeta.meta_value
                         FROM travelgeneration.wp_postmeta AS wp_postmeta 
-                        WHERE wc_order.order_id = wp_postmeta.post_id AND wp_postmeta.meta_key = "_paid_date"
+                        WHERE wc_order.id = wp_postmeta.post_id AND wp_postmeta.meta_key = "_paid_date"
                         ) AS date_paid,
                         
                         (SELECT wp_postmeta.meta_value
                         FROM travelgeneration.wp_postmeta AS wp_postmeta 
-                        WHERE wc_order.order_id = wp_postmeta.post_id AND wp_postmeta.meta_key = "_payment_method_title"
+                        WHERE wc_order.id = wp_postmeta.post_id AND wp_postmeta.meta_key = "_payment_method_title"
                         ) AS payment_method,
                        
                        (SELECT insurance.meta_value 
@@ -424,30 +424,33 @@ class TripsController extends AbstractController {
                         (SELECT wp_posts.post_title
                         FROM travelgeneration.wp_posts AS wp_posts 
                         join wp_wc_order_coupon_lookup on wp_posts.id = wp_wc_order_coupon_lookup.coupon_id
-                         WHERE wc_order.order_id = wp_wc_order_coupon_lookup.order_id limit 1) AS coupon
+                         WHERE wc_order.id = wp_wc_order_coupon_lookup.order_id limit 1) AS coupon
 
 
-                FROM travelgeneration.wp_wc_order_stats AS wc_order
+                #FROM travelgeneration.wp_wc_order_stats AS wc_order
+                FROM travelgeneration.wp_wc_orders AS wc_order
             
-                INNER JOIN travelgeneration.wp_wc_customer_lookup AS wc_customer ON wc_order.customer_id = wc_customer.customer_id
-                INNER JOIN travelgeneration.wp_woocommerce_order_items AS wc_item ON wc_order.order_id = wc_item.order_id ';
+                INNER JOIN travelgeneration.wp_wc_customer_lookup AS wc_customer ON wc_order.customer_id = wc_customer.user_id
+                INNER JOIN travelgeneration.wp_woocommerce_order_items AS wc_item ON wc_order.id = wc_item.order_id ';
         if ($product != 0):
             $sql = $sql . ' INNER JOIN travelgeneration.wp_woocommerce_order_itemmeta AS wc_item_data ON wc_item.order_item_id = wc_item_data.order_item_id ';
         endif;
 
-        $sql = $sql . ' WHERE wc_order.parent_id = 0 AND wc_order.status <> "wc-trash" ';
+        $sql = $sql . ' WHERE wc_order.parent_order_id = 0 AND wc_order.status <> "wc-trash" ';
 
         if ($product != 0):
             $sql = $sql . ' AND wc_item_data.meta_value = ' . $product;
         endif;
 
-        $sql = $sql . ' and wc_order.order_id not in(SELECT wp_posts.ID FROM wp_posts WHERE post_status like "%trash%" and post_type = "shop_order")
+        $sql = $sql . ' and wc_order.id not in(SELECT wp_posts.ID FROM wp_posts WHERE post_status like "%trash%" and post_type = "shop_order")
                
                 ' . $search . '
             ) AS result 
            
         ORDER BY result.order_id DESC' . $pagination;
 
+        dump($sql);
+        
         $stmt = $this->conn->prepare($sql);
         $resultSet = $stmt->executeQuery();
         $orders = json_decode(json_encode($resultSet->fetchAllAssociative()));
