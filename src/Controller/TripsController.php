@@ -449,7 +449,7 @@ class TripsController extends AbstractController {
            
         ORDER BY result.order_id DESC' . $pagination;
 
-        dump($sql);
+        //dump($sql);
         
         $stmt = $this->conn->prepare($sql);
         $resultSet = $stmt->executeQuery();
