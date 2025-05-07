@@ -398,7 +398,7 @@ where id = wc_order.id or parent_order_id = wc_order.id
 
 
 (SELECT IFNULL(sum(wp_wc_orders.total_amount), 0) FROM wp_wc_orders 
-where id = wc_order.id or parent_order_id = wc_order.id and wp_wc_orders.status = "wc-processing" 
+where (id = wc_order.id or parent_order_id = wc_order.id) and (wp_wc_orders.status = "wc-processing" or wp_wc_orders.status = "wc-partial-payment")
 ) AS child_orders_paid_total,
  
 
