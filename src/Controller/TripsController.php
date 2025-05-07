@@ -362,15 +362,17 @@ class TripsController extends AbstractController {
                         ) AS child_orders,
                         
                         #Retorna o valor total dos parcelamentos da encomenda
-                        (select IFNULL(sum(child_order.net_total), 0)
-                        FROM travelgeneration.wp_wc_order_stats AS child_order
-                        WHERE child_order.parent_id = wc_order.id
-                        AND wc_order.status <> "wc-trash"
-                        #LM - BEGIN
-                        AND wc_order.id not in(SELECT wp_posts.ID FROM wp_posts WHERE post_status like "%trash%" and post_type = "shop_order")
-                        #LM - END
-                        ) AS child_orders_total,
+#                        (select IFNULL(sum(child_order.net_total), 0)
+#                        FROM travelgeneration.wp_wc_order_stats AS child_order
+#                        WHERE child_order.parent_id = wc_order.id
+#                        AND wc_order.status <> "wc-trash"
+#                        AND wc_order.id not in(SELECT wp_posts.ID FROM wp_posts WHERE post_status like "%trash%" and post_type = "shop_order")
+#                        ) AS child_orders_total,
 
+
+(SELECT IFNULL(sum(wp_wc_orders.total_amount), 0) FROM wp_wc_orders 
+where id = wc_order.id or parent_order_id = wc_order.id  
+) AS child_orders_total,
 
                         #Retorna número de parcelamentos pagos
                         (select count(*) 
@@ -385,15 +387,23 @@ class TripsController extends AbstractController {
                         
 
                         #Retorna valor dos parcelamentos pagos
-                        (select IFNULL(sum(child_order.net_total), 0)
-                        FROM travelgeneration.wp_wc_order_stats AS child_order 
-                        INNER JOIN travelgeneration.wp_postmeta AS child_order_postmeta ON child_order.order_id = child_order_postmeta.post_id AND child_order_postmeta.meta_key = "_paid_date"
-                        WHERE child_order.parent_id = wc_order.id
-                        AND wc_order.status <> "wc-trash"
-                        #LM - BEGIN
-                        AND wc_order.id not in(SELECT wp_posts.ID FROM wp_posts WHERE post_status like "%trash%" and post_type = "shop_order")
-                        #LM - END
-                        ) AS child_orders_paid_total,
+#                        (select IFNULL(sum(child_order.net_total), 0)
+#                        FROM travelgeneration.wp_wc_order_stats AS child_order 
+#                        INNER JOIN travelgeneration.wp_postmeta AS child_order_postmeta ON child_order.order_id = child_order_postmeta.post_id AND child_order_postmeta.meta_key = "_paid_date"
+#                        WHERE child_order.parent_id = wc_order.id
+#                        AND wc_order.status <> "wc-trash"
+#                        AND wc_order.id not in(SELECT wp_posts.ID FROM wp_posts WHERE post_status like "%trash%" and post_type = "shop_order")
+#                        ) AS child_orders_paid_total,
+
+
+
+(SELECT IFNULL(sum(wp_wc_orders.total_amount), 0) FROM wp_wc_orders 
+where id = wc_order.id or parent_order_id = wc_order.id and wp_wc_orders.status = "wc-processing" 
+) AS child_orders_paid_total,
+ 
+
+
+
 
                         #@LM - Retorna o valor pago pelo produto
                         (SELECT sum(product_net_revenue) FROM travelgeneration.wp_wc_order_stats as child_order
@@ -529,11 +539,24 @@ class TripsController extends AbstractController {
 
             $order->customer_name = $firstname . " " . $lastname;
 
-            $order->child_orders = $order->child_orders == 0 ? "--" : $order->child_orders + 1;
-            $order->child_orders_unpaid_total = $order->date_paid == null ? $order->child_orders_unpaid_total + $order->order_total : $order->child_orders_unpaid_total;
-            $order->child_orders_paid_total = $order->date_paid == null ? $order->child_orders_paid_total : $order->child_orders_paid_total + $order->order_total;
-            $order->total = $order->order_total + $order->child_orders_total;
-
+            
+            
+            // actualmente
+            //$order->child_orders = $order->child_orders == 0 ? "--" : $order->child_orders + 1;
+            //$order->child_orders_unpaid_total = $order->date_paid == null ? $order->child_orders_unpaid_total + $order->order_total : $order->child_orders_unpaid_total;
+            //$order->child_orders_paid_total = $order->date_paid == null ? $order->child_orders_paid_total : $order->child_orders_paid_total + $order->order_total;
+            //$order->total = $order->order_total + $order->child_orders_total;
+            // fim actualmente
+            
+            $order->total = $order->child_orders_total;
+            $order->child_orders_unpaid_total = $order->total - $order->child_orders_paid_total;
+            
+            
+            
+            
+            
+            
+            
 //            $order->product_total = $order->product_total + $order->product_net_revenue;
 //            dump($order->product_total);
         }
