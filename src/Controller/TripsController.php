@@ -352,15 +352,22 @@ class TripsController extends AbstractController {
                                 )
                             ) AS user_data,
                         
-                        (select count(*)
-                        FROM travelgeneration.wp_wc_order_stats AS child_orders
-                        WHERE child_orders.parent_id = wc_order.id 
-                        AND wc_order.status <> "wc-trash"
-                        #LM - BEGIN
-                        AND wc_order.id not in(SELECT wp_posts.ID FROM wp_posts WHERE post_status like "%trash%" and post_type = "shop_order")
-                        #LM - END
-                        ) AS child_orders,
+
+# NUMERO DE PARCELAS
+#                        (select count(*)
+#                        FROM travelgeneration.wp_wc_order_stats AS child_orders
+#                        WHERE child_orders.parent_id = wc_order.id 
+#                        AND wc_order.status <> "wc-trash"
+#                        AND wc_order.id not in(SELECT wp_posts.ID FROM wp_posts WHERE post_status like "%trash%" and post_type = "shop_order")
+#                        ) AS child_orders,
                         
+(SELECT count(*) FROM wp_wc_orders 
+where id = wc_order.id or parent_order_id = wc_order.id  
+) AS child_orders,
+
+
+
+# SOMATORIO DO NUMERO DE PARCELAS                        
                         #Retorna o valor total dos parcelamentos da encomenda
 #                        (select IFNULL(sum(child_order.net_total), 0)
 #                        FROM travelgeneration.wp_wc_order_stats AS child_order
@@ -369,23 +376,28 @@ class TripsController extends AbstractController {
 #                        AND wc_order.id not in(SELECT wp_posts.ID FROM wp_posts WHERE post_status like "%trash%" and post_type = "shop_order")
 #                        ) AS child_orders_total,
 
-
 (SELECT IFNULL(sum(wp_wc_orders.total_amount), 0) FROM wp_wc_orders 
 where id = wc_order.id or parent_order_id = wc_order.id  
 ) AS child_orders_total,
 
-                        #Retorna número de parcelamentos pagos
-                        (select count(*) 
-                        FROM travelgeneration.wp_wc_order_stats AS child_order 
-                        INNER JOIN travelgeneration.wp_postmeta AS child_order_postmeta ON child_order.order_id = child_order_postmeta.post_id AND child_order_postmeta.meta_key = "_paid_date"
-                        WHERE child_order.parent_id = wc_order.id
-                        AND wc_order.status <> "wc-trash"
-                        #LM - BEGIN
-                        AND wc_order.id not in(SELECT wp_posts.ID FROM wp_posts WHERE post_status like "%trash%" and post_type = "shop_order")
-                        #LM - END                        
-                        ) AS child_orders_paid,
-                        
 
+
+# NUMERO DE PARCELAS PAGAS
+                        #Retorna número de parcelamentos pagos
+#                        (select count(*) 
+#                        FROM travelgeneration.wp_wc_order_stats AS child_order 
+#                        INNER JOIN travelgeneration.wp_postmeta AS child_order_postmeta ON child_order.order_id = child_order_postmeta.post_id AND child_order_postmeta.meta_key = "_paid_date"
+#                        WHERE child_order.parent_id = wc_order.id
+#                        AND wc_order.status <> "wc-trash"
+#                        AND wc_order.id not in(SELECT wp_posts.ID FROM wp_posts WHERE post_status like "%trash%" and post_type = "shop_order")                        
+#                        ) AS child_orders_paid,
+
+(SELECT count(*) FROM wp_wc_orders 
+where (id = wc_order.id or parent_order_id = wc_order.id) and (wp_wc_orders.status = "wc-processing" or wp_wc_orders.status = "wc-partial-payment")
+) AS child_orders_paid,
+
+                        
+# SOMATORIO DAS PARCELAS PAGAS
                         #Retorna valor dos parcelamentos pagos
 #                        (select IFNULL(sum(child_order.net_total), 0)
 #                        FROM travelgeneration.wp_wc_order_stats AS child_order 
@@ -394,8 +406,6 @@ where id = wc_order.id or parent_order_id = wc_order.id
 #                        AND wc_order.status <> "wc-trash"
 #                        AND wc_order.id not in(SELECT wp_posts.ID FROM wp_posts WHERE post_status like "%trash%" and post_type = "shop_order")
 #                        ) AS child_orders_paid_total,
-
-
 
 (SELECT IFNULL(sum(wp_wc_orders.total_amount), 0) FROM wp_wc_orders 
 where (id = wc_order.id or parent_order_id = wc_order.id) and (wp_wc_orders.status = "wc-processing" or wp_wc_orders.status = "wc-partial-payment")
@@ -587,14 +597,22 @@ where (id = wc_order.id or parent_order_id = wc_order.id) and (wp_wc_orders.stat
         ];
 
         foreach ($orders as $order) {
-            $totals[0]["value"] += (float) $order->product_net_revenue;
+            
+            
+            //VALOR TOTAL
+            //$totals[0]["value"] += (float) $order->product_net_revenue;
+            $totals[0]["value"] += (float) $order->child_orders_total;
 
-            if ((float) $order->child_orders_paid_total > (float) $order->product_net_revenue):
-                $totals[1]["value"] += (float) $order->product_net_revenue;
-            else:
-                $totals[1]["value"] += (float) $order->child_orders_paid_total;
-            endif;
-
+            
+            //VALOR PAGO
+//            if ((float) $order->child_orders_paid_total > (float) $order->product_net_revenue):
+//                $totals[1]["value"] += (float) $order->product_net_revenue;
+//            else:
+//                $totals[1]["value"] += (float) $order->child_orders_paid_total;
+//            endif;
+            $totals[1]["value"] += (float) $order->child_orders_paid_total;
+            
+            //VALOR POR PAGAR
             $totals[2]["value"] += (float) $order->child_orders_unpaid_total;
             //$totals[1]["value"] += (float) $order->total;
         }
